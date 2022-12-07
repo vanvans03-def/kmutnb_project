@@ -7,7 +7,7 @@ class BelowAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_declarations
-    final user = 'admin';
+    final user = 'รอเชื่อมต่อชื่ออยู่นะจ๊ะ';
     return Container(
       decoration: const BoxDecoration(
         gradient: GlobalVariables.appBarGradient,

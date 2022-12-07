@@ -16,4 +16,18 @@ class GlobalVariables {
   static const Color greyBackgroundCOlor = Color(0xffebecee);
   static var selectedNavBarColor = Colors.cyan[800]!;
   static const unselectedNavBarColor = Colors.black87;
+  static const List<Map<String, String>> categoryImages = [
+    {
+      'title': 'fruit',
+      'image': 'assets/images/fruit.png',
+    },
+    {
+      'title': 'vegetable',
+      'image': 'assets/images/organic-food.png',
+    },
+    {
+      'title': 'dry fruit',
+      'image': 'assets/images/dried-fruit.png',
+    },
+  ];
 }
