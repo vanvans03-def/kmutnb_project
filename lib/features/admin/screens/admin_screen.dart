@@ -1,31 +1,28 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:kmutnb_project/constants/global_variables.dart';
-import 'package:kmutnb_project/features/account/screens/account_screen.dart';
-import 'package:kmutnb_project/features/home/screens/home_screen.dart';
+import 'package:kmutnb_project/features/admin/screens/post_screen.dart';
 
-import '../../features/admin/screens/admin_screen.dart';
+import '../../../constants/global_variables.dart';
 
-class BottomBar extends StatefulWidget {
-  static const String routeName = '/actual-home';
-  const BottomBar({super.key});
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({super.key});
 
   @override
-  State<BottomBar> createState() => _BottomBarState();
+  State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _BottomBarState extends State<BottomBar> {
+class _AdminScreenState extends State<AdminScreen> {
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
 
   List<Widget> pages = [
-    const HomeScreen(),
-    const AccountScreen(),
+    const PostScreen(),
+    const Center(
+      child: Text('Analytics Page'),
+    ),
     const Center(
       child: Text('Cart Page'),
     ),
-    const AdminScreen(),
   ];
 
   void updatePage(int page) {
@@ -37,7 +34,37 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[_page],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: AppBar(
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: GlobalVariables.appBarGradient,
+            ),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.topLeft,
+                child: Image.asset(
+                  'assets/images/online2.png',
+                  width: 120,
+                  height: 45,
+                  color: Colors.black,
+                ),
+              ),
+              const Text(
+                'Admin',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
         selectedItemColor: GlobalVariables.selectedNavBarColor,
@@ -46,7 +73,7 @@ class _BottomBarState extends State<BottomBar> {
         iconSize: 28,
         onTap: updatePage,
         items: [
-          // HOME
+          // Post
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -66,7 +93,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          // ACCOUNT
+          // Anylatic
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -81,12 +108,12 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: const Icon(
-                Icons.person_outline_outlined,
+                Icons.analytics_outlined,
               ),
             ),
             label: '',
           ),
-          // CART
+          // ORder
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -101,26 +128,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: const Icon(
-                Icons.shopping_bag_outlined,
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              width: bottomBarWidth,
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: _page == 2
-                        ? GlobalVariables.selectedNavBarColor
-                        : GlobalVariables.backgroundColor,
-                    width: bottomBarBorderWidth,
-                  ),
-                ),
-              ),
-              child: const Icon(
-                Icons.person_2_outlined,
+                Icons.all_inbox_outlined,
               ),
             ),
             label: '',

@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'KMUTNB Project',
       theme: ThemeData(
         scaffoldBackgroundColor: GlobalVariables.backgroundColor,

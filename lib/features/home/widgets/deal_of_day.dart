@@ -90,7 +90,7 @@ class _DealOfDayState extends State<DealOfDay> {
           child: Text(
             'See all deals',
             style: TextStyle(
-              color: Colors.cyan[800],
+              color: Colors.cyan[800], //4.41 admin screen
             ),
           ),
         ),
