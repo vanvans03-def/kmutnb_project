@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/features/admin/screens/add_products_screen.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -8,6 +9,10 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  void navigateToAddproduct() {
+    Navigator.pushNamed(context, AddProductScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,8 +21,10 @@ class _PostScreenState extends State<PostScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {},
-      ), //4.49.
+        onPressed: navigateToAddproduct,
+        tooltip: 'Add a Product',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

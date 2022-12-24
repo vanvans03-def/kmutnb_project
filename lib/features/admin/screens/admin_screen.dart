@@ -65,6 +65,7 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ),
       ),
+      body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
         selectedItemColor: GlobalVariables.selectedNavBarColor,
@@ -88,7 +89,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
               ),
               child: const Icon(
-                Icons.home_outlined,
+                Icons.home_mini_outlined,
               ),
             ),
             label: '',
