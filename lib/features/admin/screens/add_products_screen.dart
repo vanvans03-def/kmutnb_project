@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/common/widgets/custom_textfield.dart';
 
 import '../../../constants/global_variables.dart';
 
@@ -12,6 +13,20 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
+  final TextEditingController productNameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    productNameController.dispose();
+    descriptionController.dispose();
+    priceController.dispose();
+    quantityController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +40,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ),
           title: const Text(
             'Add Product',
-            style: TextStyle(color: Colors.black), //4.52
+            style: TextStyle(color: Colors.black),
           ),
         ),
       ),
@@ -63,6 +78,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 30),
+              CustomTextField(
+                controller: productNameController,
+                hintText: 'Product Name',
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
+                controller: descriptionController,
+                hintText: 'Description',
+              ),
+              const SizedBox(height: 10), //5.00
             ],
           ),
         )),
