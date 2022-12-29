@@ -88,7 +88,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 controller: descriptionController,
                 hintText: 'Description',
               ),
-              const SizedBox(height: 10), //5.00
+              const SizedBox(height: 10), //5.00.
             ],
           ),
         )),
