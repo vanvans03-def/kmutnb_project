@@ -47,5 +47,6 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<string>We want image for product!</string>
 </dict>
 </plist>
