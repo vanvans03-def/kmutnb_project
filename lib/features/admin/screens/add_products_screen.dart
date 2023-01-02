@@ -75,7 +75,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
               images.isNotEmpty
                   ? CarouselSlider(
                       items: images.map(
-                        //5.17
                         (i) {
                           return Builder(
                             builder: (BuildContext context) => Image.file(
