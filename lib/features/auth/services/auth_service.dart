@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -15,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../common/widgets/bottom_bar.dart';
 
 class AuthService {
-  //sign up user
+  // Sign up user
   void signUpUser({
     required BuildContext context,
     required String email,
@@ -41,7 +39,6 @@ class AuthService {
         },
       );
 
-      // ignore: use_build_context_synchronously
       httpErrorHandle(
         response: res,
         context: context,
@@ -52,9 +49,12 @@ class AuthService {
           );
         },
       );
-    } catch (e) {}
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
   }
 
+  // Sign in user
   void signInUser({
     required BuildContext context,
     required String email,
@@ -71,13 +71,29 @@ class AuthService {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
+
+      // ignore: use_build_context_synchronously
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
-          await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
+          var responseJson = jsonDecode(res.body);
+          var data = responseJson['data'];
+          var token = data['token'];
+
+          if (token == null) {
+            showSnackBar(context, 'Token is null');
+            return;
+          }
+
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(responseJson);
+          await prefs.setString('x-auth-token', token);
+
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(responseJson);
+          await prefs.setString('x-auth-token', token);
           Navigator.pushNamedAndRemoveUntil(
             context,
             BottomBar.routeName,
@@ -92,15 +108,41 @@ class AuthService {
 
 //รอแก้
   // get data user
-  void getUserData({
-    required BuildContext context,
-  }) async {
+  void getUserData(
+    BuildContext context,
+  ) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('x-auth-token');
 
       if (token == null) {
         prefs.setString('x-auth-token', '');
+        return;
+      }
+
+      var tokenRes = await http.post(
+        Uri.parse('$uri/tokenIsValid'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token
+        },
+      );
+
+      var response = jsonDecode(tokenRes.body);
+
+      if (response['success'] == true) {
+        http.Response userRes = await http.get(
+          Uri.parse('$uri/'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'x-auth-token': token
+          },
+        );
+
+        if (userRes.statusCode == 200) {
+          var userProvider = Provider.of<UserProvider>(context, listen: false);
+          // userProvider.setUser(userRes.body);
+        }
       }
     } catch (e) {
       showSnackBar(context, e.toString());

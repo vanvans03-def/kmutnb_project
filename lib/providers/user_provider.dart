@@ -14,8 +14,8 @@ class UserProvider extends ChangeNotifier {
 
   User get user => _user;
 
-  void setUser(String user) {
-    _user = User.fromJson(user);
+  void setUser(Map<String, dynamic> userData) {
+    _user = User.fromMap(userData['data']);
     notifyListeners();
   }
 

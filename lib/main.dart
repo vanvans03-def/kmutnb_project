@@ -7,6 +7,9 @@ import 'package:kmutnb_project/features/auth/services/auth_service.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:kmutnb_project/router.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+final _http = http.Client();
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -30,6 +33,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    getDataCategory();
+  }
+
+  Future<void> getDataCategory() async {
+    var url = Uri.parse('https://node-api-beige.vercel.app/api/category');
+    var res = await _http.get(url);
   }
 
   @override
