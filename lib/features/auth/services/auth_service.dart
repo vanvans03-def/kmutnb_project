@@ -84,22 +84,25 @@ class AuthService {
           var token = data['token'];
 
           if (token == null) {
+            // ignore: use_build_context_synchronously
             showSnackBar(context, 'Token is null');
             return;
           }
 
+          // ignore: use_build_context_synchronously
           Provider.of<UserProvider>(context, listen: false)
               .setUser(responseJson);
           await prefs.setString('x-auth-token', token);
 
-          Provider.of<UserProvider>(context, listen: false)
-              .setUser(responseJson);
-          await prefs.setString('x-auth-token', token);
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            BottomBar.routeName,
-            (route) => false,
-          );
+          if (data['type'] != 'admin' || data['type'] != 'merchant') {
+            // ignore: use_build_context_synchronously
+            Navigator.pushNamedAndRemoveUntil(
+              //error
+              context,
+              BottomBar.routeName,
+              (route) => false,
+            );
+          }
         },
       );
     } catch (e) {

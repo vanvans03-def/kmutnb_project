@@ -22,7 +22,8 @@ class Product {
     required String productType,
     required String stockStatus,
     required String relatedProduct,
-    required String id,
+    //required String id,
+    required String productDescription,
   });
 
   String? message;
@@ -33,7 +34,7 @@ class Product {
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
         productName: '',
         category: '',
-        id: '',
+        //id: '',
         productImage: [],
         productPrice: 0,
         productSKU: '',
@@ -42,6 +43,7 @@ class Product {
         productType: '',
         relatedProduct: '',
         stockStatus: '',
+        productDescription: '',
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,8 +65,8 @@ class Data {
     this.productType,
     this.stockStatus,
     this.relatedProduct,
-    this.id,
-    this.v,
+    //this.id,
+    //this.v,
   });
 
   String? productName;
@@ -78,8 +80,8 @@ class Data {
   String? productType;
   String? stockStatus;
   List<dynamic>? relatedProduct;
-  String? id;
-  int? v;
+  // String? id;
+  //int? v;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         productName: json["productName"],
@@ -95,8 +97,8 @@ class Data {
         relatedProduct: json["relatedProduct"] == null
             ? []
             : List<dynamic>.from(json["relatedProduct"]!.map((x) => x)),
-        id: json["_id"],
-        v: json["__v"],
+        //  id: json["_id"],
+        //v: json["__v"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -113,7 +115,7 @@ class Data {
         "relatedProduct": relatedProduct == null
             ? []
             : List<dynamic>.from(relatedProduct!.map((x) => x)),
-        "_id": id,
-        "__v": v,
+        // "_id": id,
+        //"__v": v,
       };
 }

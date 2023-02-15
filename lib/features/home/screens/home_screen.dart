@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final user = 'รอเชื่อมต่อชื่ออยู่นะจ๊ะ';
+  //final user = 'รอเชื่อมต่อชื่ออยู่นะจ๊ะ';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
