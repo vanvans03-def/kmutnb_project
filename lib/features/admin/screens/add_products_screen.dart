@@ -70,6 +70,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
               images.isNotEmpty
@@ -122,25 +123,65 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ),
               const SizedBox(height: 30),
+              RichText(
+                text: TextSpan(
+                  text: "ชื่อสินค้า",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(1.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               CustomTextField(
                 controller: productNameController,
                 hintText: 'Product Name',
               ),
               const SizedBox(height: 10),
+              RichText(
+                text: TextSpan(
+                  text: "รายละเอียดสินค้า",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(1.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               CustomTextField(
                 controller: descriptionController,
                 hintText: 'Description',
                 maxLines: 7,
               ),
               const SizedBox(height: 10),
+              RichText(
+                text: TextSpan(
+                  text: "ราคาสินค้า",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(1.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               CustomTextField(
                 controller: productNameController,
                 hintText: 'Price',
               ),
               const SizedBox(height: 10),
+              RichText(
+                text: TextSpan(
+                  text: "ชื่อสินค้า",
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(1.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               CustomTextField(
                 controller: productNameController,
-                hintText: 'Quantity',
+                hintText: 'จำนวนสินค้า',
               ),
               const SizedBox(height: 10),
               SizedBox(

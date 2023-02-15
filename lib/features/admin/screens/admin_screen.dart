@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/features/admin/screens/post_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/global_variables.dart';
+import '../../../providers/user_provider.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -14,7 +16,7 @@ class _AdminScreenState extends State<AdminScreen> {
   int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
-
+  get user => Provider.of<UserProvider>(context).user;
   List<Widget> pages = [
     const PostScreen(),
     const Center(

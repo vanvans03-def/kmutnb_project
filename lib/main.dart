@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
+import 'package:kmutnb_project/features/admin/screens/admin_screen.dart';
 import 'package:kmutnb_project/features/auth/screens/auth_screen.dart';
 import 'package:kmutnb_project/features/auth/services/auth_service.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:kmutnb_project/router.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
+import 'common/widgets/bottom_bar.dart';
 
 final _http = http.Client();
 
@@ -44,23 +47,25 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'KMUTNB Project',
-      theme: ThemeData(
-        scaffoldBackgroundColor: GlobalVariables.backgroundColor,
-        colorScheme: const ColorScheme.light(
-          primary: GlobalVariables.secondaryColor,
+        debugShowCheckedModeBanner: false,
+        title: 'KMUTNB Project',
+        theme: ThemeData(
+          scaffoldBackgroundColor: GlobalVariables.backgroundColor,
+          colorScheme: const ColorScheme.light(
+            primary: GlobalVariables.secondaryColor,
+          ),
+          appBarTheme: const AppBarTheme(
+              elevation: 0,
+              iconTheme: IconThemeData(
+                color: Colors.black,
+              )),
         ),
-        appBarTheme: const AppBarTheme(
-            elevation: 0,
-            iconTheme: IconThemeData(
-              color: Colors.black,
-            )),
-      ),
-      onGenerateRoute: (settings) => generateRoute(settings),
-      home: const AuthScreen(),
-      //home: const BottomBar(),
-    );
+        onGenerateRoute: (settings) => generateRoute(settings),
+        home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+            ? Provider.of<UserProvider>(context).user.type == 'user'
+                ? const BottomBar()
+                : const AdminScreen()
+            : const AuthScreen());
   }
 }
 

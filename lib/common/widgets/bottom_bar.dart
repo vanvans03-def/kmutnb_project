@@ -25,7 +25,7 @@ class _BottomBarState extends State<BottomBar> {
     const Center(
       child: Text('Cart Page'),
     ),
-    const AdminScreen(),
+    //const AdminScreen(),
   ];
 
   void updatePage(int page) {
@@ -106,13 +106,13 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          BottomNavigationBarItem(
+          /* BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: _page == 2
+                    color: _page == 3
                         ? GlobalVariables.selectedNavBarColor
                         : GlobalVariables.backgroundColor,
                     width: bottomBarBorderWidth,
@@ -124,7 +124,7 @@ class _BottomBarState extends State<BottomBar> {
               ),
             ),
             label: '',
-          ),
+          ),*/
         ],
       ),
     );

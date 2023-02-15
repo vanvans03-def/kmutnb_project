@@ -29,6 +29,7 @@ class AuthService {
         password: password,
         type: '',
         phoneNumber: '',
+        address: '',
       );
 
       http.Response res = await http.post(

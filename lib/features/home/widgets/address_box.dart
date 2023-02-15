@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/user_provider.dart';
 
 class AddressBox extends StatelessWidget {
   const AddressBox({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final username = "ชื่อรอต่อฐานข้อมูลที่อยู่";
-    final useraddress = "ที่อยู่รอต่อฐานข้อมูลที่อยู่";
+    final user = Provider.of<UserProvider>(context).user;
+
     return Container(
       height: 40,
       decoration: const BoxDecoration(
@@ -29,7 +32,7 @@ class AddressBox extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: Text(
-                "Delivery to ${username} - ${useraddress}",
+                "Delivery to ${user.fullName} - ${user.address}",
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                 ),

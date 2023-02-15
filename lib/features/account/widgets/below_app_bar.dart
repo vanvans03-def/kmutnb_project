@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
+import 'package:kmutnb_project/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class BelowAppBar extends StatelessWidget {
   const BelowAppBar({super.key});
@@ -7,7 +9,8 @@ class BelowAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_declarations
-    final user = 'รอเชื่อมต่อชื่ออยู่นะจ๊ะ';
+    final user = Provider.of<UserProvider>(context).user;
+
     return Container(
       decoration: const BoxDecoration(
         gradient: GlobalVariables.appBarGradient,
@@ -28,7 +31,7 @@ class BelowAppBar extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: user,
+                  text: user.fullName,
                   style: const TextStyle(
                     fontSize: 22,
                     color: Colors.black,
