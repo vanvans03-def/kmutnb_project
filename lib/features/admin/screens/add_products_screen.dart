@@ -44,20 +44,28 @@ class _AddProductScreenState extends State<AddProductScreen> {
     'dry fruit',
   ];
   void sellProduct() {
-    if (_addProductFormKey.currentState!.validate() && images.isEmpty) {
+    if (_addProductFormKey.currentState!.validate()) {
       adminServices.sellProduct(
         context: context,
-        productName: productNameController.text,
-        productDescription: descriptionController.text,
-        category: 'test',
-        productImage: images,
-        productPrice: double.parse(priceController.text),
-        productSKU: quantityController.text,
-        productSalePrice: 0,
-        productShortDescription: 'test',
-        productType: category,
-        relatedProduct: 'test',
-        stockStatus: 'test',
+        productName_: productNameController.text,
+        productDescription_: descriptionController.text,
+        category_: '638cdaa9c94c9aa8a1ee0caf',
+        productImage_: [],
+        productPrice_: double.parse(priceController.text),
+        productSKU_: quantityController.text,
+        productSalePrice_: 0,
+        productShortDescription_: 'test',
+        productType_: category,
+        relatedProduct_: 'test',
+        stockStatus_: 'test',
+      );
+    } else {
+      // Show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('Please enter valid product data and at least one image.'),
+        ),
       );
     }
   }
@@ -159,6 +167,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   CustomTextField(
                     controller: productNameController,
                     hintText: 'Product Name',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Product Name is required';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
                   RichText(
@@ -175,6 +189,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     controller: descriptionController,
                     hintText: 'Description',
                     maxLines: 7,
+                    validator: (value) {},
                   ),
                   const SizedBox(height: 10),
                   RichText(
@@ -190,11 +205,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   CustomTextField(
                     controller: priceController,
                     hintText: 'Price',
+                    validator: (value) {},
                   ),
                   const SizedBox(height: 10),
                   RichText(
                     text: TextSpan(
-                      text: "ชื่อสินค้า",
+                      text: "จำนวนสินค้า",
                       style: TextStyle(
                         color: Colors.black.withOpacity(1.0),
                         fontWeight: FontWeight.bold,
@@ -204,7 +220,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   const SizedBox(height: 5),
                   CustomTextField(
                     controller: quantityController,
-                    hintText: 'จำนวนสินค้า',
+                    hintText: 'quantitiy',
+                    validator: (value) {},
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
