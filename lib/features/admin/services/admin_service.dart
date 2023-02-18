@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
@@ -11,50 +12,51 @@ import 'package:http/http.dart' as http;
 class AdminService {
   void sellProduct({
     required BuildContext context,
-    required String productName,
-    required String category,
-    required String productShortDescription,
-    required String productDescription,
-    required double productPrice,
-    required double productSalePrice,
-    required List<File> productImage,
-    required String productSKU,
-    required String productType,
-    required String stockStatus,
-    required String relatedProduct,
+    required String productName_,
+    required String category_,
+    required String productShortDescription_,
+    required String productDescription_,
+    required double productPrice_,
+    required double productSalePrice_,
+    required List<File> productImage_,
+    required String productSKU_,
+    required String productType_,
+    required String stockStatus_,
+    required String relatedProduct_,
     // required String id,
   }) async {
     try {
       final cloundinary = CloudinaryPublic('dp6dsdn8y', 'x2sxr5vn');
       List<String> imageUrls = [];
 
-      for (int i = 0; i < productImage.length; i++) {
+      for (int i = 0; i < productImage_.length; i++) {
         CloudinaryResponse res = await cloundinary.uploadFile(
-          CloudinaryFile.fromFile(productImage[i].path, folder: productName),
+          CloudinaryFile.fromFile(productImage_[i].path, folder: productName_),
         );
         imageUrls.add(res.secureUrl);
       }
       Product product = Product(
-        productName: productName,
-        category: category,
-        productShortDescription: productShortDescription,
-        productDescription: productDescription,
-        productPrice: productPrice,
-        productSalePrice: productSalePrice,
+        productName: productName_,
+        category: category_,
+        productShortDescription: productShortDescription_,
+        productDescription: productDescription_,
+        productPrice: productPrice_,
+        productSalePrice: productSalePrice_,
         productImage: imageUrls,
-        productSKU: productSKU,
-        productType: productType,
-        stockStatus: stockStatus,
-        relatedProduct: relatedProduct,
+        productSKU: productSKU_,
+        productType: productType_,
+        stockStatus: stockStatus_,
+        relatedProduct: relatedProduct_,
         //  id: id,
       );
-
+      final productJson = json.encode(product);
+      print("tasddssa" + productJson); //fix bug in json
       http.Response res = await http.post(
-        Uri.parse('$uri:4000/api/product'),
-        headers: {
+        Uri.parse('$uri/api/product'),
+        body: productJson,
+        headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: product.toJson(),
       );
       // ignore: use_build_context_synchronously
       httpErrorHandle(

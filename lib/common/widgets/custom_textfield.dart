@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.maxLines = 1,
+    required String? Function(String? value) validator,
   }) : super(key: key);
 
   @override

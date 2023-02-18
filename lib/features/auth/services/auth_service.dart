@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/error_handling.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/constants/utills.dart';
+import 'package:kmutnb_project/features/admin/screens/admin_screen.dart';
 import 'package:kmutnb_project/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:kmutnb_project/providers/user_provider.dart';
@@ -96,11 +97,18 @@ class AuthService {
 
           if (data['type'] != 'admin' || data['type'] != 'merchant') {
             // ignore: use_build_context_synchronously
-            Navigator.pushNamedAndRemoveUntil(
-              //error
+            /*   Navigator.pushNamedAndRemoveUntil(
               context,
               BottomBar.routeName,
               (route) => false,
+            );*/
+          } else if (data['type'] == 'admin') {
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminScreen(),
+              ),
             );
           }
         },

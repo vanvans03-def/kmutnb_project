@@ -99,6 +99,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextField(
                         controller: _nameController,
                         hintText: 'Name',
+                        validator: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
@@ -106,6 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextField(
                         controller: _emailController,
                         hintText: 'Email',
+                        validator: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
@@ -113,6 +115,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextField(
                         controller: _passwordController,
                         hintText: 'Password',
+                        validator: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
@@ -158,6 +161,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextField(
                         controller: _emailController,
                         hintText: 'Email',
+                        validator: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
@@ -165,6 +169,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       CustomTextField(
                         controller: _passwordController,
                         hintText: 'Password',
+                        validator: (value) {},
                       ),
                       const SizedBox(
                         height: 10,
