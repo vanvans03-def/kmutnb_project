@@ -28,7 +28,7 @@ class AuthService {
         email: email,
         token: '',
         password: password,
-        type: '',
+        type: 'user',
         phoneNumber: '',
         address: '',
       );

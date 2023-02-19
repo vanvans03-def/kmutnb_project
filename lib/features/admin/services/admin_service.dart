@@ -49,11 +49,14 @@ class AdminService {
         relatedProduct: relatedProduct_,
         //  id: id,
       );
-      final productJson = json.encode(product);
-      print("tasddssa" + productJson); //fix bug in json
+      //print("this is product object");
+      //print(product.productName);
+
+      final data = jsonEncode(product);
+      //print(data);
       http.Response res = await http.post(
         Uri.parse('$uri/api/product'),
-        body: productJson,
+        body: product.toJson(),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

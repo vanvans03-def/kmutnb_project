@@ -7,12 +7,13 @@ import 'package:kmutnb_project/common/widgets/custom_textfield.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
 import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/admin/services/admin_service.dart';
+import 'package:kmutnb_project/models/test.dart';
 
 import '../../../constants/global_variables.dart';
 
 class AddProductScreen extends StatefulWidget {
   static const String routeName = '/add-product';
-  const AddProductScreen({super.key});
+  const AddProductScreen({Key? key}) : super(key: key);
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -43,14 +44,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
     'vegetable',
     'dry fruit',
   ];
+
   void sellProduct() {
-    if (_addProductFormKey.currentState!.validate()) {
+    if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
       adminServices.sellProduct(
         context: context,
         productName_: productNameController.text,
         productDescription_: descriptionController.text,
         category_: '638cdaa9c94c9aa8a1ee0caf',
-        productImage_: [],
+        productImage_: images,
         productPrice_: double.parse(priceController.text),
         productSKU_: quantityController.text,
         productSalePrice_: 0,
@@ -59,6 +61,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         relatedProduct_: 'test',
         stockStatus_: 'test',
       );
+      print(images);
     } else {
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
