@@ -26,11 +26,11 @@ class AdminService {
     // required String id,
   }) async {
     try {
-      final cloundinary = CloudinaryPublic('dp6dsdn8y', 'x2sxr5vn');
+      final cloudinary = CloudinaryPublic('dp6dsdn8y', 'x2sxr5vn');
       List<String> imageUrls = [];
 
       for (int i = 0; i < productImage_.length; i++) {
-        CloudinaryResponse res = await cloundinary.uploadFile(
+        CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(productImage_[i].path, folder: productName_),
         );
         imageUrls.add(res.secureUrl);
