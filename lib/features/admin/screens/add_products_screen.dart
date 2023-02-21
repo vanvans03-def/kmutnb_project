@@ -5,11 +5,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/custom_textfield.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
-import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/admin/services/admin_service.dart';
-import 'package:kmutnb_project/models/test.dart';
 
 import '../../../constants/global_variables.dart';
+import '../../../constants/utills.dart';
 
 class AddProductScreen extends StatefulWidget {
   static const String routeName = '/add-product';
@@ -61,7 +60,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         relatedProduct_: 'test',
         stockStatus_: 'test',
       );
-      print(images);
     } else {
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
@@ -148,8 +146,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   Text(
                                     'Select Product Images',
                                     style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.grey.shade400),
+                                      fontSize: 15,
+                                      color: Colors.grey.shade400,
+                                    ),
                                   ),
                                 ],
                               ),

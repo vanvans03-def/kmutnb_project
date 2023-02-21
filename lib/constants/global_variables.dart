@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-String uri = 'http://192.168.1.159:4000';
+//String uri = 'http://192.168.1.159:4000';
 
-//String uri = 'https://node-api-beige.vercel.app/';
+String uri = 'https://node-api-beige.vercel.app';
+
 class GlobalVariables {
   // COLORS
   static const appBarGradient = LinearGradient(
