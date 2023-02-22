@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:js';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +55,7 @@ class AdminService {
       );
       //print("this is product object");
       //print(product.productName);
-      print("This is image URL");
-      print(product.productImage);
+
       final data = jsonEncode(product);
       //print(data);
       http.Response res = await http.post(
@@ -83,7 +81,7 @@ class AdminService {
 
   //get all
   Future<List<Product>> fetchAllProduct(BuildContext context) async {
-    final userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     List<Product> productList = [];
     try {
       http.Response res =
@@ -95,13 +93,11 @@ class AdminService {
           response: res,
           context: context,
           onSuccess: () {
-            for (int i = 0; i < jsonDecode(res.body).length; i++) {
+            var responseJson = json.decode(res.body);
+            var data = responseJson['data'];
+            for (int i = 0; i < data.length; i++) {
               productList.add(
-                Product.fromJson(
-                  jsonEncode(
-                    jsonDecode(res.body)[i],
-                  ),
-                ),
+                Product.fromJson(data[i] as Map<String, dynamic>),
               );
             }
           });

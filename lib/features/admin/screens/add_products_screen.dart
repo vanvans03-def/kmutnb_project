@@ -50,7 +50,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         context: context,
         productName_: productNameController.text,
         productDescription_: descriptionController.text,
-        category_: '638cdaa9c94c9aa8a1ee0caf',
+        category_: '638cdaa9c94c9aa8a1ee0caf', //6.05 error in map json
         productImage_: images,
         productPrice_: double.parse(priceController.text),
         productSKU_: quantityController.text,
