@@ -10,12 +10,13 @@ class PostScreen extends StatefulWidget {
   const PostScreen({Key? key}) : super(key: key);
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  _PostScreenState createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
   List<Product>? products = [];
   final AdminService adminService = AdminService();
+
   @override
   void initState() {
     super.initState();
@@ -24,11 +25,23 @@ class _PostScreenState extends State<PostScreen> {
 
   fetchAllProducts() async {
     products = await adminService.fetchAllProduct(context);
+    setState(() {});
   }
 
   void navigateToAddproduct() {
     Navigator.pushNamed(context, AddProductScreen.routeName);
     setState(() {});
+  }
+
+  void deleteProduct(Product product, int index) {
+    adminService.deleteProduct(
+      context: context,
+      product: product,
+      onSuccess: () {
+        products!.removeAt(index);
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -45,7 +58,7 @@ class _PostScreenState extends State<PostScreen> {
                 return Column(
                   children: [
                     SizedBox(
-                      height: 140,
+                      height: 100,
                       child: SingleProduct(
                         image: productData.productImage[0],
                       ),
@@ -61,11 +74,13 @@ class _PostScreenState extends State<PostScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.delete_outline),
+                          onPressed: () => deleteProduct(productData, index),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                          ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 );
               },

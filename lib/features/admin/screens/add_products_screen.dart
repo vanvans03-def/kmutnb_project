@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -6,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/custom_textfield.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
 import 'package:kmutnb_project/features/admin/services/admin_service.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../constants/global_variables.dart';
 import '../../../constants/utills.dart';
+import '../../../models/category.dart';
 
 class AddProductScreen extends StatefulWidget {
   static const String routeName = '/add-product';
@@ -25,9 +27,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController productTypeController = TextEditingController();
   final AdminService adminServices = AdminService();
-  String category = 'fruit';
+  String selectedCategoryId = 'Category';
+
   List<File> images = [];
   final _addProductFormKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     super.dispose();
@@ -38,11 +42,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
     productTypeController.dispose();
   } //สร้างตัวแปรตาม json
 
-  List<String> productCategories = [
-    'fruit',
-    'vegetable',
-    'dry fruit',
-  ];
+  List<Category> categories = [];
+
+  void _getCategories() async {
+    final response = await http.get(Uri.parse('$uri/categories'));
+    final data = json.decode(response.body);
+    setState(() {
+      categories = List<Category>.from(data.map((x) => Category.fromJson(x)));
+    });
+  }
 
   void sellProduct() {
     if (_addProductFormKey.currentState!.validate() && images.isNotEmpty) {
@@ -50,13 +58,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
         context: context,
         productName_: productNameController.text,
         productDescription_: descriptionController.text,
-        category_: '638cdaa9c94c9aa8a1ee0caf', //6.05 error in map json
+        category_: '638cdaa9c94c9aa8a1ee0caf',
         productImage_: images,
         productPrice_: double.parse(priceController.text),
         productSKU_: quantityController.text,
         productSalePrice_: 0,
         productShortDescription_: 'test',
-        productType_: category,
+        productType_: 'test',
         relatedProduct_: 'test',
         stockStatus_: 'test',
       );
@@ -229,17 +237,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: DropdownButton(
-                      value: category,
+                      value: selectedCategoryId,
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      items: productCategories.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: Text(item),
+                      items: categories.map((Category category) {
+                        return DropdownMenuItem<String>(
+                          value: category.categoryId,
+                          child: Text(category.categoryName),
                         );
                       }).toList(),
                       onChanged: (String? newVal) {
                         setState(() {
-                          category = newVal!;
+                          selectedCategoryId = newVal!;
                         });
                       },
                     ),

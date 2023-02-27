@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/error_handling.dart';
@@ -11,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:kmutnb_project/providers/user_provider.dart';
 
 import 'package:provider/provider.dart';
+
+import '../../../models/category.dart';
 
 class AdminService {
   void sellProduct({
@@ -70,7 +71,7 @@ class AdminService {
         response: res,
         context: context,
         onSuccess: () {
-          showSnackBar(context, 'Product Added Successfully!');
+          //showSnackBar(context, 'Product Added Successfully!');
           Navigator.pop(context);
         },
       );
@@ -105,5 +106,60 @@ class AdminService {
       showSnackBar(context, e.toString());
     }
     return productList;
+  }
+
+  void deleteProduct({
+    required BuildContext context,
+    required Product product,
+    required VoidCallback onSuccess,
+  }) async {
+    try {
+      http.Response res = await http
+          .delete(Uri.parse('$uri/api/product/${product.id}'), headers: {
+        'Content-Type': 'application/json; charset=UTF=8',
+      });
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          onSuccess();
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+}
+
+class CategoryService {
+  // Method to fetch all categories
+  Future<List<Category>> fetchAllCategories(BuildContext context) async {
+    List<Category> categories = [];
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$uri/api/category'), headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      });
+      // Handle success/error response using httpErrorHandle method
+      // ignore: use_build_context_synchronously
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          var responseJson = json.decode(res.body);
+          var data = responseJson['data'];
+          for (int i = 0; i < data.length; i++) {
+            categories.add(
+              Category.fromJson(data[i] as String),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      // Handle error
+      showSnackBar(context, e.toString());
+    }
+    return categories;
   }
 }
