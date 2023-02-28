@@ -133,33 +133,29 @@ class AdminService {
 }
 
 class CategoryService {
-  // Method to fetch all categories
-  Future<List<Category>> fetchAllCategories(BuildContext context) async {
-    List<Category> categories = [];
+  Future<List<Category>> fetchAllCategory(BuildContext context) async {
+    //final userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Category> categoriesList = [];
     try {
       http.Response res =
           await http.get(Uri.parse('$uri/api/category'), headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF=8',
       });
-      // Handle success/error response using httpErrorHandle method
       // ignore: use_build_context_synchronously
       httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          var responseJson = json.decode(res.body);
-          var data = responseJson['data'];
-          for (int i = 0; i < data.length; i++) {
-            categories.add(
-              Category.fromJson(data[i] as String),
-            );
-          }
-        },
-      );
+          response: res,
+          context: context,
+          onSuccess: () {
+            var responseJson = json.decode(res.body);
+            var data = responseJson['data'];
+
+            for (int i = 0; i < data.length; i++) {
+              categoriesList.add(Category.fromJson(json.encode(data[i])));
+            }
+          });
     } catch (e) {
-      // Handle error
       showSnackBar(context, e.toString());
     }
-    return categories;
+    return categoriesList;
   }
 }

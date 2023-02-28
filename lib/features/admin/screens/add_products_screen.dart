@@ -27,8 +27,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController productTypeController = TextEditingController();
   final AdminService adminServices = AdminService();
-  String selectedCategoryId = 'Category';
-
+  final CategoryService categoryServices = CategoryService();
   List<File> images = [];
   final _addProductFormKey = GlobalKey<FormState>();
 
@@ -42,14 +41,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
     productTypeController.dispose();
   } //สร้างตัวแปรตาม json
 
+  @override
+  void initState() {
+    super.initState();
+    _getCategories();
+  }
+
   List<Category> categories = [];
+  String selectedCategoryId = '';
 
   void _getCategories() async {
-    final response = await http.get(Uri.parse('$uri/categories'));
-    final data = json.decode(response.body);
-    setState(() {
-      categories = List<Category>.from(data.map((x) => Category.fromJson(x)));
-    });
+    categories = await categoryServices.fetchAllCategory(context);
+    setState(() {});
+    print("Categories list:");
+    for (var category in categories) {
+      print("${category.categoryId}: ${category.categoryName}");
+    }
   }
 
   void sellProduct() {
@@ -58,7 +65,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         context: context,
         productName_: productNameController.text,
         productDescription_: descriptionController.text,
-        category_: '638cdaa9c94c9aa8a1ee0caf',
+        category_: selectedCategoryId,
         productImage_: images,
         productPrice_: double.parse(priceController.text),
         productSKU_: quantityController.text,
@@ -231,18 +238,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   CustomTextField(
                     controller: quantityController,
                     hintText: 'quantitiy',
-                    validator: (value) {},
+                    validator: (value) {
+                      return null;
+                    },
                   ),
-                  const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity,
                     child: DropdownButton(
-                      value: selectedCategoryId,
+                      hint: Text('Select a category'),
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      items: categories.map((Category category) {
+                      items: categories.map((categories) {
                         return DropdownMenuItem<String>(
-                          value: category.categoryId,
-                          child: Text(category.categoryName),
+                          value: categories.categoryId,
+                          child: Text(categories.categoryName),
                         );
                       }).toList(),
                       onChanged: (String? newVal) {
@@ -252,11 +260,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                     ),
                   ),
+                  Text(categories
+                      .firstWhere((category) =>
+                          category.categoryId == selectedCategoryId)
+                      .categoryName),
                   const SizedBox(height: 10),
                   CustomButton(
                     text: 'Sell',
                     onTap: sellProduct,
-                  )
+                  ),
                 ],
               ),
             )),
