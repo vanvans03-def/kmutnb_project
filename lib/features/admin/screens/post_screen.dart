@@ -64,19 +64,51 @@ class _PostScreenState extends State<PostScreen> {
                       ),
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
+                        Flexible(
+                          fit: FlexFit.tight,
                           child: Text(
                             productData.productName,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
+                            style: const TextStyle(
+                                fontSize: 14), // set the font size of the text
                           ),
                         ),
-                        IconButton(
-                          onPressed: () => deleteProduct(productData, index),
-                          icon: const Icon(
-                            Icons.delete_outline,
+                        SizedBox(
+                          width: 60, // set the width of the icon
+                          height: 30, // set the height of the icon
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                // ... showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete product?'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this product?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      ),
+                                      TextButton(
+                                        child: const Text('Delete'),
+                                        onPressed: () {
+                                          deleteProduct(productData, index);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: const Icon(
+                              Icons.delete_outline,
+                            ),
                           ),
                         ),
                       ],

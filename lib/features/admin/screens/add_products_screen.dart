@@ -52,11 +52,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   void _getCategories() async {
     categories = await categoryServices.fetchAllCategory(context);
+    selectedCategoryId = categories.first.categoryId;
+
     setState(() {});
-    print("Categories list:");
-    for (var category in categories) {
-      print("${category.categoryId}: ${category.categoryName}");
-    }
   }
 
   void sellProduct() {
@@ -206,7 +204,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     controller: descriptionController,
                     hintText: 'Description',
                     maxLines: 7,
-                    validator: (value) {},
+                    validator: (value) {
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
                   RichText(
@@ -222,7 +222,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   CustomTextField(
                     controller: priceController,
                     hintText: 'Price',
-                    validator: (value) {},
+                    validator: (value) {
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
                   RichText(
@@ -260,10 +262,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                     ),
                   ),
-                  Text(categories
-                      .firstWhere((category) =>
-                          category.categoryId == selectedCategoryId)
-                      .categoryName),
+                  Text(() {
+                    try {
+                      final category = categories.firstWhere((category) =>
+                          category.categoryId == selectedCategoryId);
+                      return category.categoryName;
+                    } catch (e) {
+                      return 'No category selected';
+                    }
+                  }()),
                   const SizedBox(height: 10),
                   CustomButton(
                     text: 'Sell',
