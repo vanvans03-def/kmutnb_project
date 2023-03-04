@@ -94,13 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
-            AddressBox(),
-            SizedBox(height: 10),
+          children: [
+            const AddressBox(),
+            const SizedBox(height: 10),
             TopCategories(),
-            SizedBox(height: 10),
-            CarouseImage(),
-            DealOfDay(),
+            const SizedBox(height: 10),
+            const CarouseImage(),
+            const DealOfDay(),
           ],
         ),
       ),

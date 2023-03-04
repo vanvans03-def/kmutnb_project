@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/common/widgets/loader.dart';
 import 'package:kmutnb_project/features/home/services/home_service.dart';
 
 import '../../../constants/global_variables.dart';
+import '../../../models/category.dart';
 import '../../../models/product.dart';
 
 class CategoryDealsScreen extends StatefulWidget {
@@ -19,15 +21,20 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
   @override
   void initState() {
     super.initState();
-    //fetchCategory();
+    fetchCategory();
   }
 
-/*
   fetchCategory() async {
-    productList = await homeService.fetchAllCategory(
-        context: context, category: widget.category,);
+    String categoryId = widget.category;
+    List<Product> products = await homeService.fetchAllProduct(context);
+
+    // Filter the products that match the desired category ID
+    productList =
+        products.where((product) => product.category == categoryId).toList();
+
+    setState(() {});
   }
-*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,35 +54,73 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Keep Shopping for ${widget.category}',
-              style: const TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 170,
-            child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 15),
-                itemCount: 10,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 1.4,
-                  mainAxisSpacing: 10,
+      body: productList == null
+          ? const Loader()
+          : Column(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Keep Shopping for ${widget.category}',
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  return Text('hello');
-                }),
-          )
-        ],
-      ),
+                SizedBox(
+                  height: 170,
+                  child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 15),
+                      itemCount: productList!.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 1.4,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = productList![index];
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 130,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 0.5,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Image.network(
+                                    product.productImage[0],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.topLeft,
+                              padding: const EdgeInsets.only(
+                                left: 0,
+                                top: 5,
+                                right: 15,
+                              ),
+                              child: Text(
+                                product.productName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
+                        );
+                      }),
+                )
+              ],
+            ),
     );
   }
 }
