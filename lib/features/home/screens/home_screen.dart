@@ -3,6 +3,7 @@ import 'package:kmutnb_project/features/home/widgets/address_box.dart';
 import 'package:kmutnb_project/features/home/widgets/carousel_image.dart';
 import 'package:kmutnb_project/features/home/widgets/deal_of_day.dart';
 import 'package:kmutnb_project/features/home/widgets/top_categories.dart';
+import 'package:kmutnb_project/features/search/screens/search_screen.dart';
 
 import '../../../constants/global_variables.dart';
 
@@ -15,7 +16,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //final user = 'รอเชื่อมต่อชื่ออยู่นะจ๊ะ';
+  void navigateToSearchScreen(String query) {
+    Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,11 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(7),
                     elevation: 1,
                     child: TextFormField(
+                      onFieldSubmitted: navigateToSearchScreen,
                       decoration: InputDecoration(
                         prefixIcon: InkWell(
                           onTap: () {},
                           child: const Padding(
-                            padding: EdgeInsets.only(left: 6),
+                            padding: EdgeInsets.only(
+                              left: 6,
+                            ),
                             child: Icon(
                               Icons.search,
                               color: Colors.black,
@@ -68,9 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 1,
                           ),
                         ),
-                        hintText: "Search",
+                        hintText: 'Search Amazon.in',
                         hintStyle: const TextStyle(
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                           fontSize: 17,
                         ),
                       ),
@@ -82,12 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.transparent,
                 height: 42,
                 margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: const Icon(
-                  Icons.mic,
-                  color: Colors.black,
-                  size: 20,
-                ),
-              )
+                child: const Icon(Icons.mic, color: Colors.black, size: 25),
+              ),
             ],
           ),
         ),
