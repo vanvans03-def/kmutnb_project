@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/features/product_details/screens/product_deatails_screen.dart';
 import 'package:kmutnb_project/features/search/widgets/searched_product.dart';
 
 import '../../../common/widgets/loader.dart';
@@ -28,7 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
   fetchAllProduct() async {
     products = await searchServices.fetchAllProduct(
         context: context, searchQuery: widget.searchQuery);
-    print(products);
+
     setState(() {});
   }
 
@@ -122,8 +123,17 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: ListView.builder(
                         itemCount: products!.length,
                         itemBuilder: (context, index) {
-                          return SearchProduct(
-                            product: products![index],
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                ProductDetailScreen.routeName,
+                                arguments: products![index],
+                              );
+                            },
+                            child: SearchProduct(
+                              product: products![index],
+                            ),
                           );
                         }))
               ],
