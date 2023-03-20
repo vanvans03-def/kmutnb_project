@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:kmutnb_project/models/rating.dart';
+
 class Product {
   final String productName;
   final String category;
@@ -13,7 +15,7 @@ class Product {
   final String stockStatus;
   final String relatedProduct;
   final String? id;
-  //final List<Rating>? rating;
+  final List<Rating>? rating;
   Product({
     required this.productName,
     required this.category,
@@ -27,7 +29,7 @@ class Product {
     required this.stockStatus,
     required this.relatedProduct,
     this.id,
-    //this.rating,
+    this.rating,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,7 +45,7 @@ class Product {
       'productType': productType,
       'stockStatus': stockStatus,
       'relatedProduct': relatedProduct,
-      //'rating': rating,
+      'rating': rating,
     };
   }
 
@@ -61,13 +63,13 @@ class Product {
       stockStatus: map['stockStatus'] ?? '',
       relatedProduct: map['relatedProduct'] ?? '',
       id: map['_id'],
-      /*rating: map['ratings'] != null
+      rating: map['ratings'] != null
           ? List<Rating>.from(
               map['ratings']?.map(
                 (x) => Rating.fromMap(x),
               ),
             )
-          : null,*/
+          : null,
     );
   }
 
