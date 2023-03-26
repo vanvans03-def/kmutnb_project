@@ -31,6 +31,7 @@ class AuthService {
         type: 'user',
         phoneNumber: '',
         address: '',
+        cart: [],
       );
 
       http.Response res = await http.post(
@@ -83,7 +84,8 @@ class AuthService {
           var responseJson = jsonDecode(res.body);
           var data = responseJson['data'];
           var token = data['token'];
-
+          print("login :");
+          print(data);
           if (token == null) {
             // ignore: use_build_context_synchronously
             showSnackBar(context, 'Token is null');

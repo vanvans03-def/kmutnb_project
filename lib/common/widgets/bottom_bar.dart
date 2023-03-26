@@ -1,8 +1,10 @@
-import 'package:badges/badges.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/account/screens/account_screen.dart';
 import 'package:kmutnb_project/features/home/screens/home_screen.dart';
+import 'package:kmutnb_project/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:badges/badges.dart' as badge;
 
 import '../../features/admin/screens/admin_screen.dart';
 
@@ -36,6 +38,8 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
+
     return Scaffold(
       body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
@@ -100,8 +104,13 @@ class _BottomBarState extends State<BottomBar> {
                   ),
                 ),
               ),
-              child: const Icon(
-                Icons.shopping_bag_outlined,
+              child: badge.Badge(
+                // elevation: 0,
+                badgeContent: Text(userCartLen.toString()),
+                //badgeColor: Colors.white,
+                child: const Icon(
+                  Icons.shopping_cart_outlined,
+                ),
               ),
             ),
             label: '',
