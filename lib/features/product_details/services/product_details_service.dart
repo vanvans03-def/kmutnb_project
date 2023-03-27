@@ -22,14 +22,16 @@ class ProductDetailsServices {
     try {
       final data = jsonEncode(product);
       //print(data);
+      print(product.id);
       http.Response res = await http.post(
-        Uri.parse('$uri/api/rate-product'),
+        Uri.parse('$uri/api/cart'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'authorization': userProvider.user.token,
+          'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'id': product.id!,
+          'UserId': userProvider.user.id,
+          'ProductId': product.id!,
         }),
       );
       //print(userProvider.user.token);

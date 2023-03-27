@@ -105,9 +105,13 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: badge.Badge(
-                // elevation: 0,
+                position: badge.BadgePosition.topEnd(top: -12, end: -2),
                 badgeContent: Text(userCartLen.toString()),
                 //badgeColor: Colors.white,
+                badgeStyle: badge.BadgeStyle(
+                  badgeColor: Colors.blue.shade400,
+                  padding: EdgeInsets.all(5),
+                ),
                 child: const Icon(
                   Icons.shopping_cart_outlined,
                 ),
