@@ -47,12 +47,14 @@ class User {
       type: map['type'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       address: map['address'] ?? '',
-      cart: List<Map<String, dynamic>>.from(
-        map['cart']?.map(
-              (x) => Map<String, dynamic>.from(x),
-            ) ??
-            [],
-      ),
+      cart: (map['cart'] != null)
+          ? List<Map<String, dynamic>>.from(
+              map['cart']?.map(
+                    (x) => Map<String, dynamic>.from(x),
+                  ) ??
+                  [],
+            )
+          : [],
     );
   }
 

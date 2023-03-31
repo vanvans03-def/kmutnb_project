@@ -21,8 +21,7 @@ class ProductDetailsServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       final data = jsonEncode(product);
-      //print(data);
-      print(product.id);
+
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{
@@ -30,7 +29,7 @@ class ProductDetailsServices {
           'x-auth-token': userProvider.user.token,
         },
         body: jsonEncode({
-          'UserId': userProvider.user.id,
+          'UserEmail': userProvider.user.email,
           'ProductId': product.id!,
         }),
       );
