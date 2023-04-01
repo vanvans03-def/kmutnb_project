@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Badge;
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/account/screens/account_screen.dart';
+import 'package:kmutnb_project/features/cart/screens/cart_screen.dart';
 import 'package:kmutnb_project/features/home/screens/home_screen.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -24,9 +25,7 @@ class _BottomBarState extends State<BottomBar> {
   List<Widget> pages = [
     const HomeScreen(),
     const AccountScreen(),
-    const Center(
-      child: Text('Cart Page'),
-    ),
+    const CartScreen(),
     //const AdminScreen(),
   ];
 
