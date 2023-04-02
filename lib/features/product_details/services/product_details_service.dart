@@ -21,7 +21,10 @@ class ProductDetailsServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       final data = jsonEncode(product);
-
+      int quantity = 0;
+      for (int i = 0; i < userProvider.user.cart.length; i++) {
+        quantity = userProvider.user.cart[i]['quantity'];
+      }
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{

@@ -8,8 +8,10 @@ class CartSubtotal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
-    int sum = user.cart[0];
 
+    int sum = user.cart[0];
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    int quantity;
     return Container(
       margin: const EdgeInsets.all(10),
       child: Row(
