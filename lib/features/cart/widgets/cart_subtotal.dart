@@ -9,7 +9,7 @@ class CartSubtotal extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
 
-    int sum = user.cart[0];
+    int sum = 0;
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     int quantity;
     return Container(

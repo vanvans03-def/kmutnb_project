@@ -22,9 +22,18 @@ class ProductDetailsServices {
     try {
       final data = jsonEncode(product);
       int quantity = 0;
+      String productPrice;
+      String productId = userProvider.user.cart[1]['_id'];
       for (int i = 0; i < userProvider.user.cart.length; i++) {
         quantity = userProvider.user.cart[i]['quantity'];
+        // productPrice = userProvider.user.cart[i];
       }
+      //print(quantity);
+      //print(userProvider.user.cart[1]['_id']);
+      Product productList =
+          await findProductId(context: context, id: productId);
+
+      print(productList.id);
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{
@@ -64,7 +73,8 @@ class ProductDetailsServices {
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      final data = jsonEncode(product);
+      final data =
+          jsonEncode(product); //แก้ return productId ให้เหมือน ProductAll
       //print(data);
       http.Response res = await http.post(
         Uri.parse('$uri/api/rate-product'),
@@ -89,6 +99,36 @@ class ProductDetailsServices {
       );
     } catch (e) {
       showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<Product> findProductId({
+    required BuildContext context,
+    required String id,
+  }) async {
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/product?id=$id'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+      );
+
+      var responseJson = json.decode(res.body);
+      var data = responseJson['data'];
+
+      // ignore: use_build_context_synchronously
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          Navigator.pop(context);
+        },
+      );
+      return Product.fromJson(data);
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      throw e;
     }
   }
 }
