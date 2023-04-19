@@ -23,17 +23,18 @@ class ProductDetailsServices {
       final data = jsonEncode(product);
       int quantity = 0;
       String productPrice;
-      String productId = userProvider.user.cart[1]['_id'];
+      String productId = userProvider.user.cart[1]['product'];
       for (int i = 0; i < userProvider.user.cart.length; i++) {
         quantity = userProvider.user.cart[i]['quantity'];
         // productPrice = userProvider.user.cart[i];
       }
       //print(quantity);
       //print(userProvider.user.cart[1]['_id']);
+      print(productId);
       Product productList =
           await findProductId(context: context, id: productId);
 
-      print(productList.id);
+      print(productList.productName);
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{
@@ -107,22 +108,21 @@ class ProductDetailsServices {
     required String id,
   }) async {
     try {
-      http.Response res = await http.get(
-        Uri.parse('$uri/api/product?id=$id'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-      );
+      http.Response res =
+          await http.get(Uri.parse('$uri/api/product/$id'), headers: {
+        'Content-Type': 'application/json; charset=UTF=8',
+      });
 
-      var responseJson = json.decode(res.body);
-      var data = responseJson['data'];
-
+      // ignore: use_build_context_synchronously
+      var data;
       // ignore: use_build_context_synchronously
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () {
-          Navigator.pop(context);
+          var responseJson = json.decode(res.body);
+          data = responseJson['data'];
+          //print(data);
         },
       );
       return Product.fromJson(data);
