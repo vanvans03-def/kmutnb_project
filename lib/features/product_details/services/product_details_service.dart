@@ -20,21 +20,9 @@ class ProductDetailsServices {
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      final data = jsonEncode(product);
-      int quantity = 0;
-      String productPrice;
-      String productId = userProvider.user.cart[1]['product'];
-      for (int i = 0; i < userProvider.user.cart.length; i++) {
-        quantity = userProvider.user.cart[i]['quantity'];
-        // productPrice = userProvider.user.cart[i];
-      }
       //print(quantity);
       //print(userProvider.user.cart[1]['_id']);
-      print(productId);
-      Product productList =
-          await findProductId(context: context, id: productId);
 
-      print(productList.productName);
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{
