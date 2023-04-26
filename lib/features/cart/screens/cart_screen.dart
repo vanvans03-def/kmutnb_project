@@ -24,7 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
-    print(user.cart);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -123,10 +123,10 @@ class _CartScreenState extends State<CartScreen> {
               itemCount: user.cart.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                final product = user.cart[index];
+                final cart = user.cart[index];
                 return CartProduct(
                   index: index,
-                  cart: product,
+                  cart: cart,
                 );
               },
             )
