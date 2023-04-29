@@ -19,10 +19,8 @@ class ProductDetailsServices {
     // required String id,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final productId = product.id;
     try {
-      //print(quantity);
-      //print(userProvider.user.cart[1]['_id']);
-
       http.Response res = await http.post(
         Uri.parse('$uri/api/cart'),
         headers: <String, String>{
@@ -31,26 +29,21 @@ class ProductDetailsServices {
         },
         body: jsonEncode({
           'UserEmail': userProvider.user.email,
-          'ProductId': product.id!,
+          'ProductId': productId,
         }),
       );
-      //print(userProvider.user.token);
       // ignore: use_build_context_synchronously
       httpErrorHandle(
         response: res,
         context: context,
         onSuccess: () {
           var responseJson = jsonDecode(res.body);
-          var data = responseJson['data'];
-          //showSnackBar(context, 'Product Added Successfully!');
-          User user = userProvider.user.copyWith(cart: data['cart']);
+          User user = userProvider.user.copyWith(cart: responseJson['cart']);
           userProvider.setUserFromModel(user);
-
-          User.fromMap(data.body);
         },
       );
     } catch (e) {
-      showSnackBar(context, e.toString());
+      //showSnackBar(context, e.toString());
     }
   }
 

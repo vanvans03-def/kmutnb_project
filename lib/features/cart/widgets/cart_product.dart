@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/product.dart';
 import '../../product_details/services/product_details_service.dart';
+import '../services/cart_services.dart';
 
 class CartProduct extends StatefulWidget {
   final int index;
@@ -17,11 +19,27 @@ class CartProduct extends StatefulWidget {
 
 class _CartProductState extends State<CartProduct> {
   Product? product;
+  final ProductDetailsServices productDetailsServices =
+      ProductDetailsServices();
+  final CartService cartServices = CartService();
+
+  void incressQuantity(Product product) {
+    productDetailsServices.addToCart(
+      context: context,
+      product: product,
+    );
+  }
+
+  void decressQuantity(Product product) {
+    cartServices.removeFromCart(
+      context: context,
+      product: product,
+    );
+  }
 
   Future<void> getProduct() async {
     final user = context.read<UserProvider>().user;
-    final ProductDetailsServices productDetailsServices =
-        ProductDetailsServices();
+
     String productId = user.cart[widget.index]['product'];
     Product productList = await productDetailsServices.findProductId(
         context: context, id: productId);
@@ -42,9 +60,10 @@ class _CartProductState extends State<CartProduct> {
   @override
   Widget build(BuildContext context) {
     final productCart = context.watch<UserProvider>().user.cart[widget.index];
+    final quantity = productCart['quantity'];
 
     if (product == null) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -110,6 +129,66 @@ class _CartProductState extends State<CartProduct> {
               ],
             ),
           ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.black12,
+                ),
+                child: Row(children: [
+                  InkWell(
+                    onTap: () => decressQuantity(product!),
+                    child: Container(
+                      width: 35,
+                      height: 32,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.remove,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1.5,
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    child: Container(
+                      width: 35,
+                      height: 32,
+                      alignment: Alignment.center,
+                      child: Text(quantity.toString()),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => incressQuantity(product!),
+                    child: Container(
+                      width: 35,
+                      height: 32,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.add,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ]),
+              )
+            ],
+          ),
+        )
       ],
     );
   }
