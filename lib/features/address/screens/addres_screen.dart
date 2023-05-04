@@ -69,7 +69,7 @@ class _AddressScreenState extends State<AddressScreen> {
     } else {
       showSnackBar(context, 'error');
     }
-    print(addressToBeUsed);
+    //print(addressToBeUsed);
   }
 
   @override
