@@ -28,14 +28,13 @@ class _CartSubtotalState extends State<CartSubtotal> {
   Future<void> _calculateSum() async {
     final user = context.read<UserProvider>().user;
     final productList = <Product>[];
+    print(user.cart[0]);
 
-/*
- int sum2 = 0;
+    double sum2 = 0.0;
     user.cart
-        .map((e) => sum2 += e['quantity'] * e['product']['price'] as int)
+        .map((e) => sum2 += e['quantity'] * e['product']['price'] as double)
         .toList();
-
-*/
+    print("hello sum $sum2");
     for (int i = 0; i < user.cart.length; i++) {
       String productId = user.cart[i]['product'];
       Product product = await productDetailsServices.findProductId(
