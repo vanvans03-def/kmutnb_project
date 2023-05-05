@@ -35,10 +35,14 @@ class _CartSubtotalState extends State<CartSubtotal> {
       int quantity = user.cart[i]['quantity'] as int;
       double productPrice = product.productPrice;
 
-      setState(() {
-        _sum = _sum + quantity * productPrice;
-      });
+      _updateSum(quantity, productPrice);
     }
+  }
+
+  void _updateSum(int quantity, double productPrice) {
+    setState(() {
+      _sum += quantity * productPrice;
+    });
   }
 
   @override
