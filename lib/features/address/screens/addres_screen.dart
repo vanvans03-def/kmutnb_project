@@ -53,6 +53,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   void payPressed(String addressFromProvider) {
     addressToBeUsed = "";
+
     bool isForm = flatBuildingController.text.isNotEmpty ||
         areaController.text.isNotEmpty ||
         pincodeController.text.isNotEmpty ||
