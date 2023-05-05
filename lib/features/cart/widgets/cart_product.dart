@@ -9,9 +9,8 @@ import '../services/cart_services.dart';
 
 class CartProduct extends StatefulWidget {
   final int index;
-  final cart;
-  const CartProduct({Key? key, required this.index, required this.cart})
-      : super(key: key);
+
+  const CartProduct({Key? key, required this.index}) : super(key: key);
 
   @override
   State<CartProduct> createState() => _CartProductState();
@@ -37,36 +36,18 @@ class _CartProductState extends State<CartProduct> {
     );
   }
 
-  Future<void> getProduct() async {
-    final user = context.read<UserProvider>().user;
-
-    String productId = user.cart[widget.index]['product'];
-    Product productList = await productDetailsServices.findProductId(
-        context: context, id: productId);
-    //print(productId);
-    setState(() {
-      product = productList;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (context.read<UserProvider>().user.cart.isNotEmpty) {
-      getProduct();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final productCart = context.watch<UserProvider>().user.cart[widget.index];
+    //print(productCart); แก้ product data ของ user
+    final product = Product.fromMap(productCart['product']);
+
     final quantity = productCart['quantity'];
 
     if (product == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return Text("Data not available yet");
     }
+
     return Column(
       children: [
         if (product != null)
@@ -75,7 +56,7 @@ class _CartProductState extends State<CartProduct> {
             child: Row(
               children: [
                 Image.network(
-                  product!.productImage[0],
+                  product.productImage[0],
                   fit: BoxFit.fitWidth,
                   height: 135,
                   width: 135,
@@ -87,7 +68,7 @@ class _CartProductState extends State<CartProduct> {
                       width: 200,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        product!.productName,
+                        product.productName,
                         style: const TextStyle(
                           fontSize: 16,
                         ),
@@ -98,7 +79,7 @@ class _CartProductState extends State<CartProduct> {
                       width: 200,
                       padding: const EdgeInsets.only(left: 10, top: 5),
                       child: Text(
-                        '\฿ ${product!.productPrice}',
+                        '\฿ ${product.productPrice}',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -145,7 +126,7 @@ class _CartProductState extends State<CartProduct> {
                 ),
                 child: Row(children: [
                   InkWell(
-                    onTap: () => decressQuantity(product!),
+                    onTap: () => decressQuantity(product),
                     child: Container(
                       width: 35,
                       height: 32,
@@ -173,7 +154,7 @@ class _CartProductState extends State<CartProduct> {
                     ),
                   ),
                   InkWell(
-                    onTap: () => incressQuantity(product!),
+                    onTap: () => incressQuantity(product),
                     child: Container(
                       width: 35,
                       height: 32,

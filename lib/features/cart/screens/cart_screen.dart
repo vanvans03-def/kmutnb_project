@@ -126,20 +126,15 @@ class _CartScreenState extends State<CartScreen> {
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              height: 300, // กำหนดความสูงสูงสุดของ ListView
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: user.cart.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final cart = user.cart[index];
-                  return CartProduct(
-                    index: index,
-                    cart: cart,
-                  );
-                },
-              ),
+            const SizedBox(height: 5),
+            ListView.builder(
+              itemCount: user.cart.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return CartProduct(
+                  index: index,
+                );
+              },
             ),
           ],
         ),
