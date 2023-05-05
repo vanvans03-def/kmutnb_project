@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/bottom_bar.dart';
+import 'package:kmutnb_project/features/address/screens/addres_screen.dart';
 import 'package:kmutnb_project/features/auth/screens/auth_screen.dart';
 import 'package:kmutnb_project/features/home/screens/category_deals_screen.dart';
 import 'package:kmutnb_project/features/product_details/screens/product_deatails_screen.dart';
@@ -57,6 +58,14 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => ProductDetailScreen(
           product: product,
+        ),
+      );
+    case AddressScreen.routeName:
+      var totalAmount = routeSettings.arguments as String;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => AddressScreen(
+          totalAmount: totalAmount,
         ),
       );
     default:

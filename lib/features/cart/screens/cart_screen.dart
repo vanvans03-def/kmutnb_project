@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
+import 'package:kmutnb_project/features/address/screens/addres_screen.dart';
 import 'package:kmutnb_project/features/cart/widgets/cart_subtotal.dart';
 import 'package:kmutnb_project/features/home/widgets/address_box.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
@@ -21,9 +22,15 @@ class _CartScreenState extends State<CartScreen> {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
+  void navigateToAddress(int sum) {
+    Navigator.pushNamed(context, AddressScreen.routeName,
+        arguments: sum.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
+    int sum = 0;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -107,7 +114,7 @@ class _CartScreenState extends State<CartScreen> {
               padding: const EdgeInsets.all(8.0),
               child: CustomButton(
                 text: 'Proceed to Buy (${user.cart.length})',
-                onTap: () {},
+                onTap: () => navigateToAddress(sum),
                 color: Colors.yellow[600],
               ),
             ),
@@ -119,17 +126,21 @@ class _CartScreenState extends State<CartScreen> {
             const SizedBox(
               height: 5,
             ),
-            ListView.builder(
-              itemCount: user.cart.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final cart = user.cart[index];
-                return CartProduct(
-                  index: index,
-                  cart: cart,
-                );
-              },
-            )
+            SizedBox(
+              height: 300, // กำหนดความสูงสูงสุดของ ListView
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: user.cart.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final cart = user.cart[index];
+                  return CartProduct(
+                    index: index,
+                    cart: cart,
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

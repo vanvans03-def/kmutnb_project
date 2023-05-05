@@ -4,6 +4,7 @@ import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/product.dart';
+import '../../address/screens/addres_screen.dart';
 import '../../product_details/services/product_details_service.dart';
 
 class CartSubtotal extends StatefulWidget {
@@ -28,6 +29,13 @@ class _CartSubtotalState extends State<CartSubtotal> {
     final user = context.read<UserProvider>().user;
     final productList = <Product>[];
 
+/*
+ int sum2 = 0;
+    user.cart
+        .map((e) => sum2 += e['quantity'] * e['product']['price'] as int)
+        .toList();
+
+*/
     for (int i = 0; i < user.cart.length; i++) {
       String productId = user.cart[i]['product'];
       Product product = await productDetailsServices.findProductId(
