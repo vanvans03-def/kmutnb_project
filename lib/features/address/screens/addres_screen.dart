@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/widgets/custom_textfield.dart';
 import '../../../constants/global_variables.dart';
+import '../services/address_services.dart';
 
 class AddressScreen extends StatefulWidget {
   static const String routeName = '/address';
@@ -25,6 +26,7 @@ class _AddressScreenState extends State<AddressScreen> {
   String addressToBeUsed = "";
   List<PaymentItem> _paymentItems = [];
 
+  final AddressService addressService = AddressService();
   @override
   void initStete() {
     super.initState();
@@ -45,8 +47,18 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   void onGooglePayResult(paymentResult) {
-    // Send the resulting Google Pay token to your server / PSP
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressService.saveUser(context: context, address: addressToBeUsed);
+    }
+    addressService.placeOrder(
+        context: context,
+        address: addressToBeUsed,
+        totalSum: double.parse(widget.totalAmount));
   }
+
   void onApplePayResult(paymentResult) {
     // Send the resulting Apple Pay token to your server / PSP
   }
@@ -61,7 +73,7 @@ class _AddressScreenState extends State<AddressScreen> {
     if (isForm) {
       if (_addressFormKey.currentState!.validate()) {
         addressToBeUsed =
-            '${flatBuildingController.text},${areaController.text},${pincodeController.text},${cityController.text}';
+            '${flatBuildingController.text},${areaController.text},${cityController.text} - ${pincodeController.text}';
       } else {
         throw Exception('Please enter all the values!');
       }

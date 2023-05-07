@@ -22,31 +22,37 @@ class _CartProductState extends State<CartProduct> {
       ProductDetailsServices();
   final CartService cartServices = CartService();
 
-  void incressQuantity(Product product) {
+  void increaseQuantity(Product product) {
     productDetailsServices.addToCart(
       context: context,
       product: product,
     );
   }
 
-  void decressQuantity(Product product) {
-    cartServices.removeFromCart(
-      context: context,
-      product: product,
-    );
+  bool _isButtonDisabled = false;
+
+  void decreaseQuantity(Product product) {
+    if (!_isButtonDisabled) {
+      _isButtonDisabled = true;
+      cartServices.removeFromCart(
+        context: context,
+        product: product,
+      );
+      setState(() {});
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _isButtonDisabled = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final productCart = context.watch<UserProvider>().user.cart[widget.index];
+    //print(productCart);
     //print(productCart); แก้ product data ของ user
     final product = Product.fromMap(productCart['product']);
 
     final quantity = productCart['quantity'];
-
-    if (product == null) {
-      return Text("Data not available yet");
-    }
 
     return Column(
       children: [
@@ -126,7 +132,7 @@ class _CartProductState extends State<CartProduct> {
                 ),
                 child: Row(children: [
                   InkWell(
-                    onTap: () => decressQuantity(product),
+                    onTap: () => decreaseQuantity(product),
                     child: Container(
                       width: 35,
                       height: 32,
@@ -154,7 +160,7 @@ class _CartProductState extends State<CartProduct> {
                     ),
                   ),
                   InkWell(
-                    onTap: () => incressQuantity(product),
+                    onTap: () => increaseQuantity(product),
                     child: Container(
                       width: 35,
                       height: 32,

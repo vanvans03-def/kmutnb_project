@@ -11,7 +11,7 @@ import '../../search/screens/search_screen.dart';
 import '../widgets/cart_product.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  const CartScreen({Key? key}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -30,11 +30,15 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
+
     double sum = 0;
-    user.cart
-        .map((e) => sum += e['quantity'] *
-            double.parse(e['product']['productPrice'].toString()))
-        .toList();
+    if (user.cart.isNotEmpty) {
+      // เพิ่มเงื่อนไขการตรวจสอบว่าตะกร้ามีสินค้าหรือไม่
+      user.cart
+          .map((e) => sum += e['quantity'] *
+              double.parse(e['product']['productPrice'].toString()))
+          .toList();
+    }
 
     return Scaffold(
       appBar: PreferredSize(
@@ -130,19 +134,21 @@ class _CartScreenState extends State<CartScreen> {
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              height: 300, // กำหนดความสูงสูงสุดของ ListView
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: user.cart.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return CartProduct(
-                    index: index,
-                  );
-                },
-              ),
-            ),
+
+            // กำหนดความสูงสูงสุดของ ListView
+
+            user.cart.isNotEmpty
+                ? ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: user.cart.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return CartProduct(
+                        index: index,
+                      );
+                    },
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
