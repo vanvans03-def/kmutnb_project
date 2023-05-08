@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/account/services/account_service.dart';
 import 'package:kmutnb_project/features/account/widgets/single_product.dart';
+import 'package:kmutnb_project/features/order_detail/screens/order_details.dart';
 import 'package:kmutnb_project/models/order.dart';
 
 import '../../../common/widgets/loader.dart';
@@ -71,8 +72,17 @@ class _OrdersState extends State<Orders> {
                     scrollDirection: Axis.horizontal,
                     itemCount: orders!.length,
                     itemBuilder: (context, index) {
-                      return SingleProduct(
-                        image: orders![index].products[0].productImage[0],
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            OrderDetailScreen.routeName,
+                            arguments: orders![index],
+                          );
+                        },
+                        child: SingleProduct(
+                          image: orders![index].products[0].productImage[0],
+                        ),
                       );
                     }),
               ),

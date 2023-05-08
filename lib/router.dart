@@ -9,6 +9,8 @@ import 'package:kmutnb_project/models/product.dart';
 
 import 'features/admin/screens/add_products_screen.dart';
 import 'features/home/screens/home_screen.dart';
+import 'features/order_detail/screens/order_details.dart';
+import 'models/order.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
@@ -66,6 +68,14 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => AddressScreen(
           totalAmount: totalAmount,
+        ),
+      );
+    case OrderDetailScreen.routeName:
+      var order = routeSettings.arguments as Order;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => OrderDetailScreen(
+          order: order,
         ),
       );
     default:
