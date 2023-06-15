@@ -9,14 +9,16 @@ class AddressBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    const kPrimaryColor = Color.fromARGB(255, 83, 221, 163);
+    const kPrimaryColorsecond = Color.fromARGB(255, 69, 238, 168);
 
     return Container(
       height: 40,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color.fromARGB(255, 114, 226, 221),
-            Color.fromARGB(255, 162, 236, 233),
+            kPrimaryColor,
+            kPrimaryColorsecond,
           ],
           stops: [0.5, 1.0],
         ),
@@ -32,7 +34,7 @@ class AddressBox extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: Text(
-                "Delivery to ${user.fullName} - ${user.address}",
+                "ที่อยู่เพื่อส่งสินค้า ${user.fullName} - ${user.address}",
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -44,10 +46,6 @@ class AddressBox extends StatelessWidget {
             padding: EdgeInsets.only(
               left: 5,
               top: 2,
-            ),
-            child: Icon(
-              Icons.arrow_drop_down_outlined,
-              size: 18,
             ),
           ),
         ],

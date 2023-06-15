@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:cloudinary_public/cloudinary_public.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/error_handling.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/constants/utills.dart';
-import 'package:kmutnb_project/models/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:kmutnb_project/providers/user_provider.dart';
 
@@ -53,8 +52,6 @@ class AddressService {
     required double totalSum,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<Product> productList = [];
-    print(userProvider.user.id);
     try {
       http.Response res = await http.post(Uri.parse('$uri/api/order'),
           headers: {
@@ -84,6 +81,68 @@ class AddressService {
     } catch (e) {
       showSnackBar(context, e.toString());
     }
+  }
+
+  Future<String?> getQrCode({
+    required BuildContext context,
+    required double totalSum,
+  }) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$uri/api/generateQR'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'totalAmount': totalSum,
+          'storeTel': '0989503183',
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        final responseJson = json.decode(res.body);
+        final data = responseJson['Result'];
+        return data;
+      } else {
+        showSnackBar(context, 'Error: ${res.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      showSnackBar(context, e.toString());
+      return null;
+    }
+  }
+
+  Future<Category> getCategory({
+    required BuildContext context,
+    required String categoryId,
+  }) async {
+    final completer = Completer<Category>();
+
+    try {
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/category/$categoryId'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      // ignore: use_build_context_synchronously
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          var responseJson = json.decode(res.body);
+          var data = responseJson["data"];
+          completer.complete(Category.fromJson(data));
+        },
+      );
+    } catch (e) {
+      //showSnackBar(context, e.toString());
+      //completer.completeError(e);
+    }
+
+    return completer.future;
   }
 }
 

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/home/screens/category_deals_screen.dart';
-
 import '../../../models/category.dart';
-import '../../../models/product.dart';
 import '../services/home_service.dart';
 
 class TopCategories extends StatefulWidget {
@@ -40,7 +37,7 @@ class _TopCategoriesState extends State<TopCategories> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: 55,
       child: ListView.builder(
         itemCount: categories.length,
         itemExtent: 75,
@@ -58,7 +55,7 @@ class _TopCategoriesState extends State<TopCategories> {
                     child: Image.network(
                       categories[index].categoryImage,
                       fit: BoxFit.cover,
-                      height: 40,
+                      height: 38,
                       width: 40,
                     ),
                   ),

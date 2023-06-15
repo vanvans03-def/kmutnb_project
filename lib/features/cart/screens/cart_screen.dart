@@ -27,6 +27,26 @@ class _CartScreenState extends State<CartScreen> {
         arguments: sum.toString());
   }
 
+  void showEmptyCartDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("แจ้งเตือน"),
+          content: Text("กรุณาเพิ่มสินค้าในตระกร้า"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("ตกลง"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
@@ -120,11 +140,20 @@ class _CartScreenState extends State<CartScreen> {
             const CartSubtotal(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CustomButton(
-                text: 'Proceed to Buy (${user.cart.length})',
-                onTap: () => navigateToAddress(sum),
-                color: Colors.yellow[600],
-              ),
+              child: user.cart.length == 0
+                  ? CustomButton(
+                      text:
+                          'ดำเนินการต่อโดยสินค้า (${user.cart.length}) รายการ',
+                      onTap: () => showEmptyCartDialog(
+                          context), // ไม่มีการกำหนด onTap เพื่อให้ปุ่มไม่สามารถกดได้
+                      color: Colors.grey, // สีปุ่มที่ไม่สามารถกดได้
+                    )
+                  : CustomButton(
+                      text:
+                          'ดำเนินการต่อโดยสินค้า (${user.cart.length}) รายการ',
+                      onTap: () => navigateToAddress(sum),
+                      color: Colors.yellow[600],
+                    ),
             ),
             const SizedBox(height: 15),
             Container(

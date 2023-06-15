@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:kmutnb_project/features/auth/widgets/constants.dart';
+
 import '../../../constants/global_variables.dart';
 import '../../../models/order.dart';
-import '../../../providers/user_provider.dart';
+
 import '../../search/screens/search_screen.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class OrderDetailScreen extends StatefulWidget {
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   int currentStep = 0;
+  int indexProduct = 0;
+  bool showContainer = true;
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -24,7 +27,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   void initState() {
     super.initState();
-    currentStep = widget.order.status;
+    currentStep = widget.order.products[indexProduct].statusProductOrder;
+    if (widget.order.products.length == 1) {
+      showContainer = true;
+    }
   }
 
   @override
@@ -84,7 +90,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             width: 1,
                           ),
                         ),
-                        hintText: 'Search Amazon.in',
+                        hintText: 'Search Product',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 17,
@@ -111,11 +117,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'View order details',
+                'รายละเอียดออเดอร์',
                 style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: kPrimaryColor),
               ),
               Container(
                 width: double.infinity,
@@ -128,21 +134,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Order Date:      ${DateFormat().format(
+                    Text('วันที่ของออเดอร์:      ${DateFormat().format(
                       DateTime.fromMillisecondsSinceEpoch(
                           widget.order.orderedAt),
                     )}'),
-                    Text('Order ID:          ${widget.order.id}'),
-                    Text('Order Total:      \฿${widget.order.totalPrice}'),
+                    Text('รหัสออเดอร์:            ${widget.order.id}'),
+                    Text('ยอดรวมออเดอร์:      \฿${widget.order.totalPrice}'),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
               const Text(
-                'Purchase Details',
+                'รายละเอียดการซื้อ',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  color: kPrimaryColor,
                 ),
               ),
               Container(
@@ -155,101 +162,139 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     for (int i = 0; i < widget.order.products.length; i++)
-                      Row(
-                        children: [
-                          Image.network(
-                            widget.order.products[i].productImage[0],
-                            height: 120,
-                            width: 120,
-                          ),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.order.products[i].productName,
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  'Qty: ${widget.order.productSKU[i]}',
-                                ),
-                              ],
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (indexProduct == i && showContainer) {
+                              if (widget.order.products.length != 1) {
+                                showContainer = false;
+                              }
+
+                              currentStep =
+                                  widget.order.products[i].statusProductOrder;
+                            } else {
+                              showContainer = true;
+                              indexProduct = i;
+                              currentStep =
+                                  widget.order.products[i].statusProductOrder;
+                            }
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Image.network(
+                              widget.order.products[i].product.productImage[0],
+                              height: 120,
+                              width: 120,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget
+                                        .order.products[i].product.productName,
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    'จำนวน: ${widget.order.products[i].productSKU} ชิ้น',
+                                  ),
+                                  Text(
+                                    'ราคาต่อชิ้น: ${widget.order.products[i].product.productPrice} บาท',
+                                  ),
+                                  Radio(
+                                    value:
+                                        i, // ค่าที่แตกต่างกันสำหรับแต่ละรายการสินค้า
+                                    groupValue:
+                                        indexProduct, // ค่าปัจจุบันของรายการสินค้าที่ถูกเลือก
+                                    onChanged: (value) {
+                                      setState(() {
+                                        indexProduct = value as int;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
               const Text(
-                'Tracking',
+                'ติดตามสินค้า',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  color: kPrimaryColor,
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black12,
+              if (showContainer)
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black12,
+                    ),
                   ),
-                ),
-                child: Stepper(
-                  currentStep: currentStep,
-                  controlsBuilder: (context, details) {
-                    return const SizedBox();
-                  },
-                  steps: [
-                    Step(
-                      title: const Text('Pending'),
-                      content: const Text(
-                        'Your order is yet to be delivered',
+                  child: Stepper(
+                    currentStep: currentStep,
+                    controlsBuilder: (context, details) {
+                      return const SizedBox();
+                    },
+                    steps: [
+                      Step(
+                        title: const Text('รอดำเนินการ'),
+                        content: const Text(
+                          'คำสั่งซื้อของคุณยังไม่ได้รับการจัดส่ง',
+                        ),
+                        isActive: currentStep > 0,
+                        state: currentStep > 0
+                            ? StepState.complete
+                            : StepState.indexed,
                       ),
-                      isActive: currentStep > 0,
-                      state: currentStep > 0
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: const Text('Completed'),
-                      content: const Text(
-                        'Your order has been delivered, you are yet to sign.',
+                      Step(
+                        title: const Text('ร้านค้าได้รับออเดอร์แล้ว'),
+                        content: const Text(
+                          'ส่งคำสั่งซื้อของคุณแล้ว คุณยังไม่ได้ลงนาม',
+                        ),
+                        isActive: currentStep > 1,
+                        state: currentStep > 1
+                            ? StepState.complete
+                            : StepState.indexed,
                       ),
-                      isActive: currentStep > 1,
-                      state: currentStep > 1
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: const Text('Received'),
-                      content: const Text(
-                        'Your order has been delivered and signed by you.',
+                      Step(
+                        title: const Text('กำลังจัดส่งสินค้า'),
+                        content: const Text(
+                          'ผู้ขายได้จัดส่งสินค้าของคุณให้ขนส่งแล้ว',
+                        ),
+                        isActive: currentStep > 2,
+                        state: currentStep > 2
+                            ? StepState.complete
+                            : StepState.indexed,
                       ),
-                      isActive: currentStep > 2,
-                      state: currentStep > 2
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: const Text('Delivered'),
-                      content: const Text(
-                        'Your order has been delivered and signed by you!',
+                      Step(
+                        title: const Text('สินค้าส่งถึงแล้ว'),
+                        content: const Text(
+                          'คำสั่งซื้อของคุณได้ถูกจัดส่งและลงนามโดยคุณแล้ว',
+                        ),
+                        isActive: currentStep >= 3,
+                        state: currentStep >= 3
+                            ? StepState.complete
+                            : StepState.indexed,
                       ),
-                      isActive: currentStep >= 3,
-                      state: currentStep >= 3
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                )
+              else
+                const SizedBox(),
             ],
           ),
         ),

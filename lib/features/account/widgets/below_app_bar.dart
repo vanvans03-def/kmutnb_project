@@ -24,16 +24,16 @@ class BelowAppBar extends StatelessWidget {
         children: [
           RichText(
             text: TextSpan(
-              text: 'Hello, ',
+              text: 'ยินดีต้อนรับ, ',
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 color: Colors.black,
               ),
               children: [
                 TextSpan(
                   text: user.fullName,
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
                   ),

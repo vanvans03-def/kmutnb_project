@@ -8,7 +8,7 @@ class Product {
   final String productShortDescription;
   final String productDescription;
   final double productPrice;
-  final double productSalePrice;
+  final String productSalePrice;
   final List<String> productImage;
   final String productSKU;
   final String productType;
@@ -16,6 +16,7 @@ class Product {
   final String relatedProduct;
   final String? id;
   final List<Rating>? rating;
+  final String storeId;
   Product({
     required this.productName,
     required this.category,
@@ -30,10 +31,12 @@ class Product {
     required this.relatedProduct,
     this.id,
     this.rating,
+    required this.storeId,
   });
 
   Map<String, dynamic> toMap() {
     return {
+      '_id': id,
       'productName': productName,
       'category': category,
       'productShortDescription': productShortDescription,
@@ -46,6 +49,7 @@ class Product {
       'stockStatus': stockStatus,
       'relatedProduct': relatedProduct,
       'rating': rating,
+      'storeId': storeId,
     };
   }
 
@@ -56,7 +60,7 @@ class Product {
       productShortDescription: map['productShortDescription'] ?? '',
       productDescription: map['productDescription'] ?? '',
       productPrice: map['productPrice']?.toDouble() ?? 0.0,
-      productSalePrice: map['productSalePrice']?.toDouble() ?? 0.0,
+      productSalePrice: map['productSalePrice']?.toString() ?? '',
       productImage: List<String>.from(map['productImage']),
       productSKU: map['productSKU'] ?? '',
       productType: map['productType'] ?? '',
@@ -70,6 +74,7 @@ class Product {
               ),
             )
           : null,
+      storeId: map['storeId'],
     );
   }
 

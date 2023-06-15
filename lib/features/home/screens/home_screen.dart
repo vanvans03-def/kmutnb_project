@@ -7,6 +7,10 @@ import 'package:kmutnb_project/features/search/screens/search_screen.dart';
 
 import '../../../constants/global_variables.dart';
 
+import '../../chat/screens/ChatPage.dart';
+
+import '../widgets/filter_widget.dart';
+
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
   const HomeScreen({super.key});
@@ -88,8 +92,44 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 color: Colors.transparent,
                 height: 42,
+                width: 20,
                 margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: const Icon(Icons.mic, color: Colors.black, size: 25),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.filter_list,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return FilterWidget();
+                      },
+                    );
+                  },
+                ),
+              ),
+              Container(
+                color: Colors.transparent,
+                height: 42,
+                width: 20,
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.chat,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChatPage(),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

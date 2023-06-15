@@ -3,11 +3,10 @@ import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/account/screens/account_screen.dart';
 import 'package:kmutnb_project/features/cart/screens/cart_screen.dart';
 import 'package:kmutnb_project/features/home/screens/home_screen.dart';
+import 'package:kmutnb_project/features/myprofile/screens/user_profile_screen.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badge;
-
-import '../../features/admin/screens/admin_screen.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
@@ -26,7 +25,7 @@ class _BottomBarState extends State<BottomBar> {
     const HomeScreen(),
     const AccountScreen(),
     const CartScreen(),
-    //const AdminScreen(),
+    const UserProfileScreen(),
   ];
 
   void updatePage(int page) {
@@ -43,7 +42,7 @@ class _BottomBarState extends State<BottomBar> {
       body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
-        selectedItemColor: GlobalVariables.selectedNavBarColor,
+        selectedItemColor: GlobalVariables.kPrimaryColor,
         unselectedItemColor: GlobalVariables.unselectedNavBarColor,
         backgroundColor: GlobalVariables.backgroundColor,
         iconSize: 28,
@@ -57,7 +56,7 @@ class _BottomBarState extends State<BottomBar> {
                 border: Border(
                   top: BorderSide(
                     color: _page == 0
-                        ? GlobalVariables.selectedNavBarColor
+                        ? GlobalVariables.kPrimaryColor
                         : GlobalVariables.backgroundColor,
                     width: bottomBarBorderWidth,
                   ),
@@ -77,14 +76,14 @@ class _BottomBarState extends State<BottomBar> {
                 border: Border(
                   top: BorderSide(
                     color: _page == 1
-                        ? GlobalVariables.selectedNavBarColor
+                        ? GlobalVariables.kPrimaryColor
                         : GlobalVariables.backgroundColor,
                     width: bottomBarBorderWidth,
                   ),
                 ),
               ),
               child: const Icon(
-                Icons.person_outline_outlined,
+                Icons.assignment_outlined,
               ),
             ),
             label: '',
@@ -97,7 +96,7 @@ class _BottomBarState extends State<BottomBar> {
                 border: Border(
                   top: BorderSide(
                     color: _page == 2
-                        ? GlobalVariables.selectedNavBarColor
+                        ? GlobalVariables.kPrimaryColor
                         : GlobalVariables.backgroundColor,
                     width: bottomBarBorderWidth,
                   ),
@@ -118,14 +117,14 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: '',
           ),
-          /* BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
                     color: _page == 3
-                        ? GlobalVariables.selectedNavBarColor
+                        ? GlobalVariables.kPrimaryColor
                         : GlobalVariables.backgroundColor,
                     width: bottomBarBorderWidth,
                   ),
@@ -136,7 +135,7 @@ class _BottomBarState extends State<BottomBar> {
               ),
             ),
             label: '',
-          ),*/
+          ),
         ],
       ),
     );

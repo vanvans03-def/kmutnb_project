@@ -1,18 +1,21 @@
-import 'dart:convert';
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/admin/screens/admin_screen.dart';
-import 'package:kmutnb_project/features/auth/screens/auth_screen.dart';
+
 import 'package:kmutnb_project/features/auth/services/auth_service.dart';
+
+import 'package:kmutnb_project/providers/store_provider.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:kmutnb_project/router.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import 'common/widgets/bottom_bar.dart';
-import 'models/product.dart';
+import 'features/auth/screens/login_screen.dart';
 
 final _http = http.Client();
 
@@ -21,7 +24,10 @@ void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => UserProvider(),
-    )
+    ),
+    ChangeNotifierProvider(
+      create: (context) => StoreProvider(),
+    ),
   ], child: const MyApp()));
 }
 
@@ -52,9 +58,10 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'KMUTNB Project',
         theme: ThemeData(
+          fontFamily: 'OpenSans',
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,
           colorScheme: const ColorScheme.light(
-            primary: GlobalVariables.secondaryColor,
+            primary: GlobalVariables.kPrimaryColor,
           ),
           appBarTheme: const AppBarTheme(
               elevation: 0,
@@ -67,7 +74,7 @@ class _MyAppState extends State<MyApp> {
             ? Provider.of<UserProvider>(context).user.type == 'user'
                 ? const BottomBar()
                 : const AdminScreen()
-            : const AuthScreen());
+            : LoginScreen());
   }
 }
 

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -7,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/custom_textfield.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
 import 'package:kmutnb_project/features/admin/services/admin_service.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:kmutnb_project/models/productprice.dart';
 import '../../../constants/global_variables.dart';
 import '../../../constants/utills.dart';
 import '../../../models/category.dart';
@@ -45,10 +45,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void initState() {
     super.initState();
     _getCategories();
+    _getProductprices();
   }
 
   List<Category> categories = [];
   String selectedCategoryId = '';
+
+  String? selectedProductPriceId;
+  List<ProductPrice> productPrices = [];
+  List<ProductPrice> productpricesList = [];
+  void _getProductprices() async {
+    productpricesList = await adminServices.fetchAllProductprice(context);
+
+    setState(() {});
+  }
 
   void _getCategories() async {
     categories = await categoryServices.fetchAllCategory(context);
@@ -67,16 +77,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
         productImage_: images,
         productPrice_: double.parse(priceController.text),
         productSKU_: quantityController.text,
-        productSalePrice_: 0,
+        productSalePrice_: selectedProductPriceId.toString(),
         productShortDescription_: 'test',
         productType_: 'test',
         relatedProduct_: 'test',
         stockStatus_: 'test',
       );
+
+      setState(() {});
     } else {
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content:
               Text('Please enter valid product data and at least one image.'),
         ),
@@ -189,6 +201,79 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       return null;
                     },
                   ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      String productName = productNameController.text;
+                      List<ProductPrice> searchedProductPrices =
+                          await adminServices.searchProductprice(
+                        context: context,
+                        productName: productName,
+                      );
+
+                      setState(() {
+                        productPrices = searchedProductPrices;
+                        selectedProductPriceId = productPrices.first
+                            .productId; // ตั้งค่าเริ่มต้นเป็น null เพื่อให้ Dropdown ไม่แสดงค่าที่ถูกเลือก
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: "ราคาสินค้าวันนี้",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(1.0),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (productPrices.isNotEmpty)
+                    Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: selectedProductPriceId,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedProductPriceId = newValue!;
+                            });
+                          },
+                          items: [
+                            const DropdownMenuItem<String>(
+                              value: '0',
+                              child: Text(
+                                  'ไม่มีสินค้าที่ใกล้เคียง/ไม่แสดงราคาสินค้าแนะนำ'),
+                            ),
+                            ...productPrices.map((productPrice) {
+                              return DropdownMenuItem<String>(
+                                value: productPrice.productId,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          productPrice.productName,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Text('Price: ${productPrice.priceMax}'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 10),
                   RichText(
                     text: TextSpan(
@@ -244,33 +329,44 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: DropdownButton(
-                      hint: Text('Select a category'),
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      items: categories.map((categories) {
-                        return DropdownMenuItem<String>(
-                          value: categories.categoryId,
-                          child: Text(categories.categoryName),
-                        );
-                      }).toList(),
-                      onChanged: (String? newVal) {
-                        setState(() {
-                          selectedCategoryId = newVal!;
-                        });
-                      },
+                  RichText(
+                    text: TextSpan(
+                      text: "ประเภทสินค้า",
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(1.0),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  Text(() {
-                    try {
-                      final category = categories.firstWhere((category) =>
-                          category.categoryId == selectedCategoryId);
-                      return category.categoryName;
-                    } catch (e) {
-                      return 'No category selected';
-                    }
-                  }()),
+                  const SizedBox(height: 5),
+                  Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedCategoryId,
+                        onChanged: (String? newVal) {
+                          setState(() {
+                            selectedCategoryId = newVal!;
+                          });
+                        },
+                        items: categories.map((category) {
+                          return DropdownMenuItem<String>(
+                            value: category.categoryId,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(category.categoryName),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 10),
                   CustomButton(
                     text: 'Sell',

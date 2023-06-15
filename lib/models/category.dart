@@ -11,14 +11,6 @@ class Category {
     required this.categoryId,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'categoryName': categoryName,
-      'categoryImage': categoryImage,
-      'categoryId': categoryId,
-    };
-  }
-
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
       categoryName: map['categoryName'] ?? '',
@@ -27,8 +19,24 @@ class Category {
     );
   }
 
-  factory Category.fromJson(String source) =>
-      Category.fromMap(json.decode(source));
+  factory Category.fromJson(dynamic data) {
+    if (data is String) {
+      final Map<String, dynamic> jsonMap = json.decode(data);
+      return Category.fromMap(jsonMap);
+    } else if (data is Map<String, dynamic>) {
+      return Category.fromMap(data);
+    } else {
+      throw FormatException('Invalid data format for Category');
+    }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'categoryName': categoryName,
+      'categoryImage': categoryImage,
+      'categoryId': categoryId,
+    };
+  }
 
   String toJson() => json.encode(toMap());
 }

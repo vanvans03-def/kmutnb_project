@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
+import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/features/product_details/services/product_details_service.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/product.dart';
+import '../../cart/screens/cart_screen.dart';
 import '../../search/screens/search_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -23,33 +25,48 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final ProductDetailsServices productDetailsServices =
       ProductDetailsServices();
-  void navigateToSearchScreen(String query) {
-    Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
-  }
-
-  double avgRating = 0;
   double myRating = 0;
+  double avgRating = 0;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     double totalRating = 0;
-    /* for (int i = 0; i < widget.product.rating!.length; i++) {
+    for (int i = 0; i < widget.product.rating!.length; i++) {
       totalRating += widget.product.rating![i].rating;
       if (widget.product.rating![i].userId ==
           Provider.of<UserProvider>(context, listen: false).user.id) {
         myRating = widget.product.rating![i].rating;
       }
     }
-    if (totalRating != 0) {
+
+    if (widget.product.rating!.isNotEmpty) {
       avgRating = totalRating / widget.product.rating!.length;
-    }*/
+    }
+    setState(() {}); // อัปเดตค่า avgRating
+  }
+
+  void navigateToSearchScreen(String query) {
+    Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
   void addToCart() {
     productDetailsServices.addToCart(
       context: context,
       product: widget.product,
+    );
+  }
+
+  void addToCartAndGo() {
+    productDetailsServices.addToCart(
+      context: context,
+      product: widget.product,
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CartScreen(),
+      ),
     );
   }
 
@@ -132,29 +149,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.product.id!,
-                ),
-                Stars(
-                  rating: avgRating,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white70,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 20,
-              horizontal: 10,
-            ),
-            child: Text(
-              widget.product.productName,
-              style: const TextStyle(
-                fontSize: 15,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.product.productName,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor),
+                  ),
+                  Stars(
+                    rating: avgRating,
+                  ),
+                ],
               ),
             ),
           ),
@@ -221,15 +243,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: CustomButton(
-              text: 'Buy Now',
-              onTap: () {},
+              text: 'ซื้อสินค้า',
+              onTap: addToCartAndGo,
             ),
           ),
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.all(10),
             child: CustomButton(
-              text: 'Add to Cart',
+              text: 'กดใส่ตระกร้า',
               onTap: addToCart,
               color: const Color.fromRGBO(254, 216, 19, 1),
             ),
@@ -242,9 +264,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Text(
-              'Rate The Product',
+              'คะแนนสินค้า',
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -1,5 +1,10 @@
+// ignore_for_file: body_might_complete_normally_nullable
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/utills.dart';
+import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:pay/pay.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +16,7 @@ import '../services/address_services.dart';
 class AddressScreen extends StatefulWidget {
   static const String routeName = '/address';
   final String totalAmount;
-  const AddressScreen({super.key, required this.totalAmount});
+  const AddressScreen({Key? key, required this.totalAmount}) : super(key: key);
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -25,10 +30,11 @@ class _AddressScreenState extends State<AddressScreen> {
   final _addressFormKey = GlobalKey<FormState>();
   String addressToBeUsed = "";
   List<PaymentItem> _paymentItems = [];
-
+  String? image64;
   final AddressService addressService = AddressService();
+
   @override
-  void initStete() {
+  void initState() {
     super.initState();
     _paymentItems.add(PaymentItem(
       amount: widget.totalAmount,
@@ -44,6 +50,78 @@ class _AddressScreenState extends State<AddressScreen> {
     areaController.dispose();
     pincodeController.dispose();
     cityController.dispose();
+  }
+
+  Future<void> getQrCode() async {
+    image64 = await addressService.getQrCode(
+        context: context, totalSum: double.parse(widget.totalAmount));
+    final base64Image = image64!.substring(image64!.indexOf(',') + 1);
+    if (base64Image.isNotEmpty) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(
+            'QR Code ทั้งหมด ${widget.totalAmount} ฿',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: kPrimaryColor,
+            ),
+          ),
+          content: Image.memory(
+            base64Decode(base64Image),
+            width: 200,
+            height: 200,
+          ),
+          actions: [
+            Column(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // เมื่อคลิกปุ่ม
+                    pickOneImage();
+                  },
+                  icon: Icon(Icons.add), // ไอคอนที่แสดงในปุ่ม
+                  label: Text('เพิ่มรูปภาพ'), // ข้อความที่แสดงในปุ่ม
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('ยืนยัน'),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'ออก',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void onGooglePayResult(paymentResult) {
@@ -82,7 +160,6 @@ class _AddressScreenState extends State<AddressScreen> {
     } else {
       showSnackBar(context, 'error');
     }
-    //print(addressToBeUsed);
   }
 
   @override
@@ -96,6 +173,9 @@ class _AddressScreenState extends State<AddressScreen> {
             decoration: const BoxDecoration(
               gradient: GlobalVariables.appBarGradient,
             ),
+          ),
+          title: Text(
+            'เพิ่มที่อยู่และชำระสินค้า',
           ),
         ),
       ),
@@ -124,8 +204,8 @@ class _AddressScreenState extends State<AddressScreen> {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'OR',
-                      style: TextStyle(fontSize: 16),
+                      'หรืออัปเดตที่อยู่ใหม่',
+                      style: TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -190,6 +270,33 @@ class _AddressScreenState extends State<AddressScreen> {
                 onPaymentResult: onApplePayResult,
                 loadingIndicator: const Center(
                   child: CircularProgressIndicator(),
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                'หรือ',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 5),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0),
+                        side: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    getQrCode();
+                  },
+                  child: Text(
+                    "PromptPay QrCode".toUpperCase(),
+                    style: TextStyle(fontSize: 14),
+                  ),
                 ),
               ),
             ],

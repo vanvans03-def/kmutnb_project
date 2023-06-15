@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kmutnb_project/providers/product_list_provider.dart';
+
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../../models/product.dart';
-import '../../address/screens/addres_screen.dart';
-import '../../product_details/services/product_details_service.dart';
 
 class CartSubtotal extends StatelessWidget {
   const CartSubtotal({Key? key}) : super(key: key);
@@ -24,7 +20,7 @@ class CartSubtotal extends StatelessWidget {
       child: Row(
         children: [
           const Text(
-            'Subtotal ',
+            'ราคารวมทั้งหมด ',
             style: TextStyle(
               fontSize: 20,
             ),
