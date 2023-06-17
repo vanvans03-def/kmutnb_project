@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/features/account/services/account_service.dart';
 import 'package:kmutnb_project/features/account/widgets/account_button.dart';
+import 'package:kmutnb_project/features/account/widgets/order_return.dart';
+import 'package:kmutnb_project/features/account/widgets/order_sucees.dart';
 
 class TopButtons extends StatefulWidget {
   const TopButtons({super.key});
@@ -17,12 +19,26 @@ class _TopButtonsState extends State<TopButtons> {
         Row(
           children: [
             AccountButtons(
-              text: 'ออเดอร์ของคุณ',
-              onTap: () {},
+              text: 'ได้รับแล้ว',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OrdersSucees(),
+                  ),
+                );
+              },
             ),
             AccountButtons(
               text: 'คืนสินค้า',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OrdersReturn(),
+                  ),
+                );
+              },
             ),
           ],
         ),

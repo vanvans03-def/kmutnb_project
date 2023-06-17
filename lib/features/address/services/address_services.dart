@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/error_handling.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
@@ -50,8 +52,17 @@ class AddressService {
     required BuildContext context,
     required String address,
     required double totalSum,
+    required File? image,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    String imageSlip = 'GooglePay';
+    if (image != null) {
+      final cloudinary = CloudinaryPublic('dp6dsdn8y', 'x2sxr5vn');
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(image.path, folder: userProvider.user.id),
+      );
+      imageSlip = (response.secureUrl);
+    }
     try {
       http.Response res = await http.post(Uri.parse('$uri/api/order'),
           headers: {
@@ -61,7 +72,8 @@ class AddressService {
             'cart': userProvider.user.cart,
             'address': address,
             'totalPrice': totalSum,
-            'userId': userProvider.user.id
+            'userId': userProvider.user.id,
+            'image': imageSlip,
           }));
 
       // ignore: use_build_context_synchronously
@@ -69,13 +81,13 @@ class AddressService {
         response: res,
         context: context,
         onSuccess: () {
-          print(res.body);
           showSnackBar(context, "You order is saved");
 
           User user = userProvider.user.copyWith(
             cart: [],
           );
           userProvider.setUserFromModel(user);
+          Navigator.of(context).pop();
         },
       );
     } catch (e) {

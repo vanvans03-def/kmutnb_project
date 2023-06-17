@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:image_card/image_card.dart';
+import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 
+import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/category.dart';
 import '../../../models/product.dart';
+import '../../../models/productprice.dart';
 import '../../../models/store.dart';
 import '../../account/widgets/single_product.dart';
 import '../../admin/screens/store_category_screen.dart';
@@ -31,12 +35,18 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
     super.initState();
     _getCategories();
     fetchAllProductsUser();
+    _getProductprices();
   }
 
   void _getCategories() async {
     categories = await adminService.fetchAllCategory(context);
 
     setState(() {});
+  }
+
+  List<ProductPrice> productpricesList = [];
+  void _getProductprices() async {
+    productpricesList = await adminService.fetchAllProductprice(context);
   }
 
   void navigateToCategoryPage(BuildContext context, String categoryId) {
@@ -180,12 +190,33 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                                       mainAxisSpacing: 10,
                                       childAspectRatio:
                                           orientation == Orientation.portrait
-                                              ? 0.71
+                                              ? 0.66
                                               : 0.56,
                                     ),
                                     padding: const EdgeInsets.all(10),
                                     itemBuilder: (context, index) {
                                       final productData = products![index];
+                                      double totalRating = 0.0;
+                                      double avgRating = 0.0;
+                                      // ignore: unused_local_variable
+                                      double rateAllProduct = 0.0;
+
+                                      final productA = productData;
+
+                                      for (int j = 0;
+                                          j < productA.rating!.length;
+                                          j++) {
+                                        totalRating +=
+                                            productA.rating![j].rating;
+                                      }
+                                      if (productA.rating!.isNotEmpty) {
+                                        avgRating = totalRating /
+                                            productA.rating!.length;
+                                        rateAllProduct += avgRating;
+                                      } else {
+                                        avgRating = 0.0;
+                                      }
+
                                       String nameCategoryOfProduct = '';
                                       for (int i = 0;
                                           i < categories.length;
@@ -215,16 +246,19 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                                                 child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  child: SingleProduct(
+                                                  child: SingleOrderProduct(
                                                     image: productData
                                                         .productImage[0],
                                                     productName:
                                                         productData.productName,
-                                                    productPrice: productData
+                                                    price: productData
                                                         .productPrice
                                                         .toString(),
-                                                    categoryName:
-                                                        nameCategoryOfProduct,
+                                                    productPriceList:
+                                                        productpricesList,
+                                                    ratings: avgRating,
+                                                    salePrice: productData
+                                                        .productSalePrice,
                                                   ),
                                                 ),
                                               ),
@@ -263,14 +297,136 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                       ),
                     )
                   : CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(
-                        widget.store.storeImage,
+                      radius: 37,
+                      backgroundColor: kPrimaryColor,
+                      child: CircleAvatar(
+                        radius: 34,
+                        backgroundImage: NetworkImage(
+                          widget.store.storeImage,
+                        ),
                       ),
                     ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SingleOrderProduct extends StatelessWidget {
+  final String image;
+  final String price;
+  final String? salePrice;
+  final String productName;
+  final double ratings;
+  final List<ProductPrice> productPriceList;
+
+  const SingleOrderProduct({
+    Key? key,
+    required this.image,
+    required this.price,
+    this.salePrice,
+    required this.productPriceList,
+    required this.productName,
+    required this.ratings,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String mocPrice = '';
+
+    void _getSalePrice() {
+      if (salePrice != null && salePrice != '0') {
+        for (int i = 0; i < productPriceList.length; i++) {
+          if (productPriceList[i].productId == salePrice) {
+            mocPrice = productPriceList[i].priceMax.toString();
+          }
+        }
+      }
+      print(mocPrice);
+    }
+
+    _getSalePrice();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: Stack(
+        children: [
+          TransparentImageCard(
+            width: 200,
+            height: 300,
+            imageProvider: NetworkImage(image),
+            title: _title(color: Colors.white, productName: productName),
+            description: _content(color: Colors.white, price: price),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Visibility(
+              visible: mocPrice != '',
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Container(
+              width: 200,
+              padding: const EdgeInsets.all(8),
+              child: Stars(rating: ratings),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _tag(String label, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget _content({required Color color, required String price}) {
+    return Text(
+      "$price฿/กก.",
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+          color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _title({Color? color, required String productName}) {
+    return Text(
+      productName,
+      maxLines: 2,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: color,
       ),
     );
   }

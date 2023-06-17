@@ -97,7 +97,7 @@ class _DealOfDayState extends State<DealOfDay> {
                       ? SingleProduct(
                           image: productList!.first.productImage[0],
                           price:
-                              '฿ ${productList!.first.productPrice.toString()}/KG',
+                              '${productList!.first.productPrice.toString()}',
                           productName: productList!.first.productName,
                           ratings: avgRating,
                           productPriceList: productpricesList,
@@ -225,7 +225,7 @@ class SingleOrderProduct extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'ราคาตลาดวันนี้ $mocPrice ฿',
+                  'ราคาตลาดวันนี้ $mocPrice ฿/กก',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -264,7 +264,7 @@ class SingleOrderProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿",
+      "$price฿/กก.",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -360,7 +360,7 @@ class SingleProduct extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    'ราคาตลาดวันนี้ $mocPrice ฿',
+                    'ราคาตลาดวันนี้ $mocPrice฿/กก.',
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
@@ -400,7 +400,7 @@ class SingleProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿",
+      "$price฿/กก.",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(

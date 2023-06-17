@@ -405,7 +405,7 @@ class SingleOrderProduct extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'ราคาตลาดวันนี้ $mocPrice ฿',
+                  'ราคาตลาดวันนี้ $mocPrice฿/กก.',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -444,7 +444,7 @@ class SingleOrderProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿",
+      "$price฿/กก.",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(

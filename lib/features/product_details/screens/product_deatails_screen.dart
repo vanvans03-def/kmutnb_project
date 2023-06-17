@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/product.dart';
+import '../../../models/productprice.dart';
+import '../../admin/services/admin_service.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../search/screens/search_screen.dart';
 
@@ -27,10 +29,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ProductDetailsServices();
   double myRating = 0;
   double avgRating = 0;
+  String mocPrice = '';
 
   @override
   void initState() {
     super.initState();
+    _getProductprices();
+
     double totalRating = 0;
     for (int i = 0; i < widget.product.rating!.length; i++) {
       totalRating += widget.product.rating![i].rating;
@@ -44,6 +49,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       avgRating = totalRating / widget.product.rating!.length;
     }
     setState(() {}); // อัปเดตค่า avgRating
+  }
+
+  final AdminService adminServices = AdminService();
+  List<ProductPrice> productpricesList = [];
+  void _getProductprices() async {
+    productpricesList = await adminServices.fetchAllProductprice(context);
+
+    setState(() {
+      for (int i = 0; i < productpricesList.length; i++) {
+        if (productpricesList[i].productId == widget.product.productSalePrice) {
+          mocPrice = productpricesList[i].priceMax.toString();
+        }
+      }
+    });
   }
 
   void navigateToSearchScreen(String query) {
@@ -180,22 +199,44 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ),
-          CarouselSlider(
-            items: widget.product.productImage.map(
-              (i) {
-                return Builder(
-                  builder: (BuildContext context) => Image.network(
-                    i,
-                    fit: BoxFit.contain,
-                    height: 300,
+          Column(
+            children: [
+              if (mocPrice != '') ...[
+                Align(
+                  alignment: FractionalOffset.topLeft,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    margin: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
                   ),
-                );
-              },
-            ).toList(),
-            options: CarouselOptions(
-              viewportFraction: 1,
-              height: 300,
-            ),
+                ),
+              ],
+              CarouselSlider(
+                items: widget.product.productImage.map(
+                  (i) {
+                    return Builder(
+                      builder: (BuildContext context) => Image.network(
+                        i,
+                        fit: BoxFit.contain,
+                        height: 300,
+                      ),
+                    );
+                  },
+                ).toList(),
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  height: 300,
+                ),
+              ),
+            ],
           ),
           Container(
             color: Colors.black12,
@@ -205,7 +246,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             padding: const EdgeInsets.all(8),
             child: RichText(
               text: TextSpan(
-                text: 'Deal Price: ',
+                text: 'ราคา: ',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -213,7 +254,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 children: [
                   TextSpan(
-                    text: '\฿${widget.product.productPrice}',
+                    text: '${widget.product.productPrice}฿/กก',
                     style: const TextStyle(
                       fontSize: 22,
                       color: Colors.red,
@@ -251,7 +292,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: CustomButton(
-              text: 'กดใส่ตระกร้า',
+              text: 'กดใส่ตะกร้า',
               onTap: addToCart,
               color: const Color.fromRGBO(254, 216, 19, 1),
             ),

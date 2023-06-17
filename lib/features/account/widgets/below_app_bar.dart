@@ -27,14 +27,14 @@ class BelowAppBar extends StatelessWidget {
               text: 'ยินดีต้อนรับ, ',
               style: const TextStyle(
                 fontSize: 20,
-                color: Colors.black,
+                color: Colors.white,
               ),
               children: [
                 TextSpan(
                   text: user.fullName,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 )

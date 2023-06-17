@@ -318,7 +318,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                       child: TextField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          labelText: 'Min Price',
+                          labelText: 'ราคาขั้นต่ำ',
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -332,7 +332,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                       child: TextField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          labelText: 'Max Price',
+                          labelText: 'ราคาสูงสุด',
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -362,7 +362,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                         });
                       },
                     ),
-                    const Text('Sort by Price (Low to High)'),
+                    const Text('เรียงตามสินค้าที่น้อยที่สุด'),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -376,7 +376,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                         });
                       },
                     ),
-                    const Text('Sort by Price (High to Low)'),
+                    const Text('เรียงตามสินค้าที่มากที่สุด'),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -385,7 +385,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     _applyFilters();
                     Navigator.pop(context);
                   },
-                  child: const Text('Apply Filters'),
+                  child: const Text('ยืนยันการเลือก'),
                 ),
               ],
             ),

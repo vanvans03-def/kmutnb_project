@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/bottom_bar.dart';
+import 'package:kmutnb_project/features/account/widgets/order_return.dart';
 import 'package:kmutnb_project/features/address/screens/addres_screen.dart';
 import 'package:kmutnb_project/features/auth/screens/auth_screen.dart';
 import 'package:kmutnb_project/features/chat/screens/StoreChatPage.dart';
@@ -12,6 +13,7 @@ import 'package:kmutnb_project/models/ChatModel.dart';
 import 'package:kmutnb_project/models/orderStore.dart';
 import 'package:kmutnb_project/models/product.dart';
 
+import 'features/account/widgets/order_sucees.dart';
 import 'features/admin/screens/add_products_screen.dart';
 import 'features/admin/screens/admin_screen.dart';
 import 'features/admin/screens/edit_products_screen.dart';
@@ -204,6 +206,17 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => const EditeStoreScreen(),
       );
+    case OrdersSucees.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const OrdersSucees(),
+      );
+    case OrdersReturn.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const OrdersReturn(),
+      );
+
     default:
       return MaterialPageRoute(
         settings: routeSettings,

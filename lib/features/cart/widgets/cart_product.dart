@@ -87,7 +87,7 @@ class _CartProductState extends State<CartProduct> {
                       width: 200,
                       padding: const EdgeInsets.only(left: 10, top: 5),
                       child: Text(
-                        '\฿ ${product.productPrice}',
+                        '${product.productPrice}฿/กก.',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class _CartProductState extends State<CartProduct> {
                       width: 200,
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
-                        'Eligible for FREE Shipping',
+                        'สินค้าพร้อมส่ง',
                       ),
                     ),
                     Container(

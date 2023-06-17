@@ -1,7 +1,9 @@
-// ignore_for_file: body_might_complete_normally_nullable
+// ignore_for_file: body_might_complete_normally_nullable, prefer_const_constructors
 
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
@@ -29,10 +31,12 @@ class _AddressScreenState extends State<AddressScreen> {
   final TextEditingController cityController = TextEditingController();
   final _addressFormKey = GlobalKey<FormState>();
   String addressToBeUsed = "";
+  File? _selectedImage;
   List<PaymentItem> _paymentItems = [];
   String? image64;
   final AddressService addressService = AddressService();
-
+  String? slipImage;
+  bool tap = false;
   @override
   void initState() {
     super.initState();
@@ -50,6 +54,58 @@ class _AddressScreenState extends State<AddressScreen> {
     areaController.dispose();
     pincodeController.dispose();
     cityController.dispose();
+  }
+
+  Future<void> showSlip() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(
+          'สลิปการโอนเงินของคุณ',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: kPrimaryColor,
+          ),
+        ),
+        content: Container(
+          height: 500.0,
+          decoration: const BoxDecoration(
+            color: Colors.orange,
+          ),
+          child: Image.file(
+            _selectedImage!,
+            fit: BoxFit.cover,
+          ),
+        ),
+        actions: [
+          Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'ออก',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> getQrCode() async {
@@ -77,13 +133,61 @@ class _AddressScreenState extends State<AddressScreen> {
           actions: [
             Column(
               children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // เมื่อคลิกปุ่ม
-                    pickOneImage();
-                  },
-                  icon: Icon(Icons.add), // ไอคอนที่แสดงในปุ่ม
-                  label: Text('เพิ่มรูปภาพ'), // ข้อความที่แสดงในปุ่ม
+                if (tap) ...[
+                  Container(
+                    height: 150.0,
+                    decoration: const BoxDecoration(
+                      color: Colors.orange,
+                    ),
+                    child: Image.file(
+                      _selectedImage!,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.orange,
+                      ),
+                      onPressed: () async {
+                        if (_selectedImage != null) {
+                          showSlip();
+                        } else {
+                          showSnackBar(context, 'กรุณาอัปโหลดสลิป');
+                        }
+
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.open_in_new), // ไอคอนที่แสดงในปุ่ม
+                      label: Text(
+                        'แสดงรูปภาพ',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ), // ข้อความที่แสดงในปุ่ม
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        File? image = await pickOneImage();
+
+                        setState(() {
+                          _selectedImage = image;
+                        });
+                      },
+                      icon: Icon(Icons.add), // ไอคอนที่แสดงในปุ่ม
+                      label: Text(
+                        'เพิ่มรูปภาพ',
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ), // ข้อความที่แสดงในปุ่ม
+                    ),
+                  ],
                 ),
                 Row(
                   children: [
@@ -92,7 +196,11 @@ class _AddressScreenState extends State<AddressScreen> {
                         alignment: Alignment.center,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            if (_selectedImage != null) {
+                              onPromptPayResult();
+                            } else {
+                              showSnackBar(context, "กรุณาอัปโหลดสลิป");
+                            }
                           },
                           child: const Text('ยืนยัน'),
                         ),
@@ -134,7 +242,45 @@ class _AddressScreenState extends State<AddressScreen> {
     addressService.placeOrder(
         context: context,
         address: addressToBeUsed,
-        totalSum: double.parse(widget.totalAmount));
+        totalSum: double.parse(widget.totalAmount),
+        image: _selectedImage);
+  }
+
+  Future<File?> pickOneImage() async {
+    File? image;
+    try {
+      var files = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+      if (files != null && files.files.isNotEmpty) {
+        image = File(files.files.first.path!);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    setState(() {});
+    return image;
+  }
+
+  Future<void> onPromptPayResult() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    var address = userProvider.user.address;
+    payPressed(address);
+
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressService.saveUser(context: context, address: addressToBeUsed);
+    }
+
+    addressService.placeOrder(
+      context: context,
+      address: addressToBeUsed,
+      totalSum: double.parse(widget.totalAmount),
+      image: _selectedImage,
+    );
   }
 
   void onApplePayResult(paymentResult) {

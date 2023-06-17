@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 
+import '../../../common/widgets/customer_button.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/order.dart';
 
@@ -20,6 +21,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   int currentStep = 0;
   int indexProduct = 0;
   bool showContainer = true;
+  String storeId = '';
+  String productId = '';
+  String orderId = '';
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -33,6 +37,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
   }
 
+  void returnOrderstatus() {}
   @override
   Widget build(BuildContext context) {
     //final user = Provider.of<UserProvider>(context).user;
@@ -247,7 +252,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   child: Stepper(
                     currentStep: currentStep,
                     controlsBuilder: (context, details) {
-                      return const SizedBox();
+                      if (currentStep >= 0 && currentStep <= 3) {
+                        if (currentStep == 3) {
+                          return SizedBox(
+                            height: 30,
+                            width: 110,
+                            child: CustomButton(
+                              color: Colors.red.shade400,
+                              text: 'คืนสินค้า',
+                              onTap: () => returnOrderstatus(),
+                            ),
+                          );
+                        }
+
+                        return const SizedBox();
+                      } else {
+                        return Text("กำลังคืนสินค้า");
+                      }
                     },
                     steps: [
                       Step(
