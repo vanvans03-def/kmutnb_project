@@ -127,7 +127,7 @@ class _UserProfileScreen extends State<UserProfileScreen> {
                 Icons.history,
                 color: kPrimaryColor,
               ),
-              title: const Text('กดดูประวัติออร์เดอร์'),
+              title: const Text('กดดูประวัติออเดอร์'),
               onTap: () {
                 Navigator.push(
                   context,

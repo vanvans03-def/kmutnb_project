@@ -121,7 +121,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.history),
-                title: const Text('กดดูประวัติออร์เดอร์'),
+                title: const Text('กดดูประวัติออเดอร์'),
                 onTap: () {
                   Navigator.push(
                     context,
