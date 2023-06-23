@@ -49,9 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
       receiverId: widget.receiverId,
     );
 
-    setState(() {
-      // อัปเดตสถานะของ UI หลังจากเรียงลำดับ
-    });
+    setState(() {});
   }
 
   void connectSocket() {

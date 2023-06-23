@@ -175,8 +175,6 @@ class _MapScreenState extends State<MapScreen> {
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],
                   ),
-                  // เพิ่ม MarkerLayerOptions หากต้องการใส่ตัวชี้แผนที่บนแผนที่
-
                   MarkerLayer(
                     markers: marker,
                   ),

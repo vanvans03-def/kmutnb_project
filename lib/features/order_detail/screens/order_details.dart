@@ -6,6 +6,7 @@ import '../../../common/widgets/customer_button.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/order.dart';
 
+import '../../home/screens/store_product_screen.dart';
 import '../../search/screens/search_screen.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   String storeId = '';
   String productId = '';
   String orderId = '';
+  int checkOrder = 0;
+  int index = 0;
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -31,13 +34,43 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   void initState() {
     super.initState();
-    currentStep = widget.order.products[indexProduct].statusProductOrder;
+
+    if (widget.order.products[indexProduct].statusProductOrder > 3) {
+      checkOrder = widget.order.products[indexProduct].statusProductOrder;
+      if (checkOrder == 4) {
+        currentStep = 3;
+      } else if (checkOrder == 5) {
+        currentStep = 4;
+      } else {
+        currentStep = 0;
+      }
+      showContainer = false;
+    } else {
+      currentStep = widget.order.products[indexProduct].statusProductOrder;
+    }
+
     if (widget.order.products.length == 1) {
       showContainer = true;
     }
+    print(checkOrder);
+    print(showContainer);
   }
 
-  void returnOrderstatus() {}
+  void returnOrderstatus(
+      int status, String orderId, String productId, String storeId) {
+    adminService.changeOrderStatus(
+        context: context,
+        status: status + 1,
+        orderId: orderId,
+        storeId: storeId,
+        productId: productId,
+        onSuccess: () {});
+    setState(() {
+      currentStep += 1;
+      checkOrder = currentStep;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //final user = Provider.of<UserProvider>(context).user;
@@ -175,13 +208,28 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 showContainer = false;
                               }
 
-                              currentStep =
+                              checkOrder =
                                   widget.order.products[i].statusProductOrder;
+                              if (widget.order.products[i].statusProductOrder >
+                                  3) {
+                                currentStep = 3;
+                              } else {
+                                currentStep =
+                                    widget.order.products[i].statusProductOrder;
+                              }
+                              print(currentStep);
                             } else {
                               showContainer = true;
                               indexProduct = i;
-                              currentStep =
+                              checkOrder =
                                   widget.order.products[i].statusProductOrder;
+                              if (widget.order.products[i].statusProductOrder >
+                                  3) {
+                                currentStep = 3;
+                              } else {
+                                currentStep =
+                                    widget.order.products[i].statusProductOrder;
+                              }
                             }
                           });
                         },
@@ -242,7 +290,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   color: kPrimaryColor,
                 ),
               ),
-              if (showContainer)
+              if (showContainer && checkOrder < 4) ...[
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -258,17 +306,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             height: 30,
                             width: 110,
                             child: CustomButton(
-                              color: Colors.red.shade400,
-                              text: 'คืนสินค้า',
-                              onTap: () => returnOrderstatus(),
-                            ),
+                                color: Colors.red.shade400,
+                                text: 'คืนสินค้า',
+                                onTap: () {
+                                  returnOrderstatus(
+                                      3,
+                                      widget.order.id,
+                                      widget.order.products[indexProduct]
+                                          .product.id
+                                          .toString(),
+                                      widget.order.products[indexProduct]
+                                          .product.storeId);
+                                  setState(() {});
+                                }),
                           );
                         }
 
                         return const SizedBox();
-                      } else {
+                      } else
                         return Text("กำลังคืนสินค้า");
-                      }
                     },
                     steps: [
                       Step(
@@ -314,7 +370,61 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ],
                   ),
                 )
-              else
+              ] else if (checkOrder == 4) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: GlobalVariables.kPrimaryColor,
+                    ),
+                  ),
+                  child: const Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'คำขอคืนออเดอร์ถูกส่งแล้ว',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )
+              ] else if (checkOrder == 5) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: GlobalVariables.kPrimaryColor,
+                    ),
+                  ),
+                  child: const Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'การคืนออเดอร์สำเร็จแล้ว',
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )
+              ] else
                 const SizedBox(),
             ],
           ),

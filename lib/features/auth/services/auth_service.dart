@@ -159,11 +159,7 @@ class AuthService {
             // ignore: use_build_context_synchronously, await_only_futures
 
             // ignore: use_build_context_synchronously
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AdminScreen.routeName,
-              (route) => false, // ลบทุกหน้าออกจาก Stack
-            );
+            showSnackBar(context, 'กรุณาใช้งานแอปพลิเคชันสำหรับผู้ขาย');
           }
         },
       );

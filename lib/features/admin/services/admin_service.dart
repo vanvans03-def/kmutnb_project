@@ -380,7 +380,9 @@ class AdminService {
         response: res,
         context: context,
         onSuccess: () {
+          print(jsonDecode(res.body));
           onSuccess();
+          print(status);
         },
       );
     } catch (e) {

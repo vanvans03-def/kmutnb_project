@@ -195,9 +195,10 @@ class _AddressScreenState extends State<AddressScreen> {
                       child: Align(
                         alignment: Alignment.center,
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_selectedImage != null) {
-                              onPromptPayResult();
+                              await onPromptPayResult();
+                              Navigator.of(context).pop();
                             } else {
                               showSnackBar(context, "กรุณาอัปโหลดสลิป");
                             }

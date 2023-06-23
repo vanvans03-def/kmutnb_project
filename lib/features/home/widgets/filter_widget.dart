@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/features/home/screens/filter_product.dart';
 import 'package:kmutnb_project/features/home/services/home_service.dart';
@@ -55,9 +56,13 @@ class _FilterWidgetState extends State<FilterWidget> {
     if (value != null) {
       provinces = value;
       setState(() {
-        selectedProvinceId = provinces[0].id.toString();
-        label = '${provinces[0].officialRegion} รอบๆตัวฉัน';
-        isTaps = true;
+        try {
+          selectedProvinceId = provinces[0].id.toString();
+          label = '${provinces[0].officialRegion} รอบๆตัวฉัน';
+          isTaps = true;
+        } catch (e) {
+          showSnackBar(context, 'เกิดข้อผิดพลาด');
+        }
       });
     }
   }

@@ -5,6 +5,7 @@ import 'package:kmutnb_project/features/address/screens/addres_screen.dart';
 import 'package:kmutnb_project/features/auth/screens/auth_screen.dart';
 import 'package:kmutnb_project/features/chat/screens/StoreChatPage.dart';
 import 'package:kmutnb_project/features/home/screens/category_deals_screen.dart';
+import 'package:kmutnb_project/features/home/screens/store_category_screen.dart';
 import 'package:kmutnb_project/features/home/widgets/map_screen.dart';
 import 'package:kmutnb_project/features/myprofile/screens/profile_screen.dart';
 import 'package:kmutnb_project/features/product_details/screens/product_deatails_screen.dart';
@@ -12,12 +13,13 @@ import 'package:kmutnb_project/features/search/screens/search_screen.dart';
 import 'package:kmutnb_project/models/ChatModel.dart';
 import 'package:kmutnb_project/models/orderStore.dart';
 import 'package:kmutnb_project/models/product.dart';
+import 'package:kmutnb_project/models/store.dart';
 
 import 'features/account/widgets/order_sucees.dart';
 import 'features/admin/screens/add_products_screen.dart';
 import 'features/admin/screens/admin_screen.dart';
 import 'features/admin/screens/edit_products_screen.dart';
-import 'features/admin/screens/store_category_screen.dart';
+
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/signup_screen.dart';
 import 'features/chat/screens/ChatPage.dart';
@@ -90,12 +92,15 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       );
     case StoreCategoryScreen.routeName:
       var category = routeSettings.arguments as String;
+      var store = routeSettings.arguments as Store;
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => StoreCategoryScreen(
           category: category,
+          store: store,
         ),
       );
+
     case SearchScreen.routeName:
       var searchQuery = routeSettings.arguments as String;
       return MaterialPageRoute(

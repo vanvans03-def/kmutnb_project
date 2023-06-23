@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_card/image_card.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
+import 'package:kmutnb_project/features/home/screens/store_category_screen.dart';
 
 import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
@@ -9,7 +10,7 @@ import '../../../models/product.dart';
 import '../../../models/productprice.dart';
 import '../../../models/store.dart';
 import '../../account/widgets/single_product.dart';
-import '../../admin/screens/store_category_screen.dart';
+
 import '../../admin/services/admin_service.dart';
 import '../../product_details/screens/product_deatails_screen.dart';
 import '../../product_details/services/product_details_service.dart';
@@ -28,6 +29,7 @@ int selectedCategoryIndex = 0;
 List<Product>? products = [];
 String categoryId = '';
 List<Category> categories = [];
+String mocPrice = '';
 
 class _StoreProductScreenState extends State<StoreProductScreen> {
   @override
@@ -49,11 +51,16 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
     productpricesList = await adminService.fetchAllProductprice(context);
   }
 
-  void navigateToCategoryPage(BuildContext context, String categoryId) {
-    Navigator.pushNamed(
+  void navigateToCategoryPage(
+      BuildContext context, String categoryId, Store store) {
+    Navigator.push(
       context,
-      StoreCategoryScreen.routeName,
-      arguments: categoryId,
+      MaterialPageRoute(
+        builder: (_) => StoreCategoryScreen(
+          category: categoryId,
+          store: store,
+        ),
+      ),
     );
   }
 
@@ -140,7 +147,9 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () => navigateToCategoryPage(
-                                      context, categories[index].categoryId),
+                                      context,
+                                      categories[index].categoryId,
+                                      widget.store),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -216,15 +225,15 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                                       } else {
                                         avgRating = 0.0;
                                       }
-
-                                      String nameCategoryOfProduct = '';
+                                      mocPrice = '';
                                       for (int i = 0;
-                                          i < categories.length;
+                                          i < productpricesList.length;
                                           i++) {
-                                        if (productData.category ==
-                                            categories[i].categoryId) {
-                                          nameCategoryOfProduct =
-                                              categories[i].categoryName;
+                                        if (productpricesList[i].productId ==
+                                            productData.productSalePrice) {
+                                          mocPrice = productpricesList[i]
+                                              .priceMax
+                                              .toString();
                                         }
                                       }
 
@@ -259,6 +268,7 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
                                                     ratings: avgRating,
                                                     salePrice: productData
                                                         .productSalePrice,
+                                                    mocPrice: mocPrice,
                                                   ),
                                                 ),
                                               ),
@@ -320,6 +330,7 @@ class SingleOrderProduct extends StatelessWidget {
   final String? salePrice;
   final String productName;
   final double ratings;
+  final String mocPrice;
   final List<ProductPrice> productPriceList;
 
   const SingleOrderProduct({
@@ -330,25 +341,11 @@ class SingleOrderProduct extends StatelessWidget {
     required this.productPriceList,
     required this.productName,
     required this.ratings,
+    required this.mocPrice,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String mocPrice = '';
-
-    void _getSalePrice() {
-      if (salePrice != null && salePrice != '0') {
-        for (int i = 0; i < productPriceList.length; i++) {
-          if (productPriceList[i].productId == salePrice) {
-            mocPrice = productPriceList[i].priceMax.toString();
-          }
-        }
-      }
-      print(mocPrice);
-    }
-
-    _getSalePrice();
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Stack(

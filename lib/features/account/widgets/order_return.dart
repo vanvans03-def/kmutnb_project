@@ -31,11 +31,15 @@ class _OrdersReturn extends State<OrdersReturn> {
     orderList = await accountServices.fetchMyOrder(context);
     orders = []; // Add this line to initialize the orders list
     for (int i = 0; i < orderList!.length; i++) {
+      bool isAllProductsStatus3 = true;
       for (int j = 0; j < orderList![i].products.length; j++) {
-        if (orderList![i].products[j].statusProductOrder == 4) {
-          orders!.add(orderList![i]);
-          break; // Add this line to break the inner loop when a match is found
+        if (orderList![i].products[j].statusProductOrder <= 3) {
+          isAllProductsStatus3 = false;
+          break;
         }
+      }
+      if (isAllProductsStatus3) {
+        orders!.add(orderList![i]);
       }
     }
     setState(() {});

@@ -198,8 +198,9 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                       List<Product> productsInStore = productList!
                           .where((product) => product.storeId == store.storeId)
                           .toList();
-                      if (productsInStore.isEmpty) {
-                        // Skip empty stores
+
+                      if (store.storeStatus == '0' || productsInStore.isEmpty) {
+                        // Skip hidden stores or stores without products
                         return const SizedBox.shrink();
                       }
 
