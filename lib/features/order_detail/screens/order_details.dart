@@ -340,7 +340,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       Step(
                         title: const Text('ร้านค้าได้รับออเดอร์แล้ว'),
                         content: const Text(
-                          'ส่งคำสั่งซื้อของคุณแล้ว คุณยังไม่ได้ลงนาม',
+                          'ผู้ขายกำลังแพ็คสินค้าเพื่อจัดส่งสินค้าให้คุณ',
                         ),
                         isActive: currentStep > 1,
                         state: currentStep > 1

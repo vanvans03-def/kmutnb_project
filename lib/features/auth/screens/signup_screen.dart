@@ -89,13 +89,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             RoundedIcon(
-                              imageUrl: "assets/images/facebook.png",
-                              onTap: registerGoogle,
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            RoundedIcon(
                               imageUrl: "assets/images/google.jpg",
                               onTap: registerGoogle,
                             ),

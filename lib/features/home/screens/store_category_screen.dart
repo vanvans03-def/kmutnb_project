@@ -204,13 +204,6 @@ class _StoreCategoryScreenState extends State<StoreCategoryScreen> {
                     ],
                   ),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  child: const Icon(Icons.add),
-                  onPressed: navigateToAddproduct,
-                  tooltip: 'Add a Product',
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
               ));
   }
 }

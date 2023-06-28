@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/constants/global_variables.dart';
 import 'package:kmutnb_project/features/account/widgets/below_app_bar.dart';
@@ -10,39 +12,42 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(30),
-        child: AppBar(
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: GlobalVariables.appBarGradient,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(30),
+          child: AppBar(
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: GlobalVariables.appBarGradient,
+              ),
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  alignment: Alignment.topLeft,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: const Row(children: []),
+                )
+              ],
             ),
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              Container(
-                alignment: Alignment.topLeft,
+              BelowAppBar(),
+              SizedBox(height: 5),
+              SizedBox(
+                height: MediaQuery.of(context).size.height -
+                    48 -
+                    5 -
+                    kToolbarHeight,
+                child: Orders(),
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: const Row(children: []),
-              )
             ],
           ),
-        ),
-      ),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            BelowAppBar(),
-            SizedBox(height: 10),
-            TopButtons(),
-            SizedBox(height: 5),
-            Orders(),
-          ],
-        ),
-      ),
-    );
+        ));
   }
 }

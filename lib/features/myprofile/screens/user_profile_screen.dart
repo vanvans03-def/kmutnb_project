@@ -47,13 +47,8 @@ class _UserProfileScreen extends State<UserProfileScreen> {
   AccountServices accountServices = AccountServices();
   Future<void> logOutGoogle() async {
     await GoogleSignInApi.logout();
-    accountServices.logOut(context);
+
     // ignore: use_build_context_synchronously
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      LoginScreen.routeName,
-      (route) => false,
-    );
   }
 
   @override
@@ -150,6 +145,12 @@ class _UserProfileScreen extends State<UserProfileScreen> {
               title: const Text('ออกจากระบบ'),
               onTap: () {
                 logOutGoogle();
+                Provider.of<UserProvider>(context, listen: false).logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false,
+                );
               },
             ),
             const Divider(

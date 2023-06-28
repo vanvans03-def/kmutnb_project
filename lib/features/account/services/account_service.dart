@@ -36,18 +36,4 @@ class AccountServices {
     }
     return orderList;
   }
-
-  void logOut(BuildContext context) async {
-    try {
-      Provider.of<UserProvider>(context, listen: false).clearUserData();
-
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AuthScreen.routeName,
-        (route) => false,
-      );
-    } catch (e) {
-      showSnackBar(context, e.toString());
-    }
-  }
 }

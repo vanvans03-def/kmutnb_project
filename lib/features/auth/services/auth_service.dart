@@ -31,7 +31,7 @@ class AuthService {
         email: email,
         token: '',
         password: password,
-        type: 'merchant',
+        type: 'user',
         phoneNumber: '',
         address: '',
         cart: [],
@@ -148,18 +148,14 @@ class AuthService {
               .setUser(responseJson);
           await prefs.setString('x-auth-token', token);
 
-          if (data['type'] != 'admin' || data['type'] != 'merchant') {
-            // ignore: use_build_context_synchronously
-            /*   Navigator.pushNamedAndRemoveUntil(
-              context,
-              BottomBar.routeName,
-              (route) => false,
-            );*/
-          } else if (data['type'] == 'merchant') {
+          if (data['type'] == 'merchant') {
             // ignore: use_build_context_synchronously, await_only_futures
 
             // ignore: use_build_context_synchronously
             showSnackBar(context, 'กรุณาใช้งานแอปพลิเคชันสำหรับผู้ขาย');
+          } else if (data['type'] != 'admin' || data['type'] != 'merchant') {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/actual-home', (route) => false);
           }
         },
       );

@@ -82,13 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             RoundedIcon(
-                              imageUrl: "assets/images/facebook.png",
-                              onTap: signInGoogle,
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            RoundedIcon(
                               imageUrl: "assets/images/google.jpg",
                               onTap: signInGoogle,
                             ),

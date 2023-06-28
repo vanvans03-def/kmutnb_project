@@ -44,4 +44,8 @@ class UserProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void logout() {
+    clearUserData();
+  }
 }
