@@ -6,7 +6,7 @@ import 'package:kmutnb_project/features/admin/services/admin_service.dart';
 import 'package:kmutnb_project/features/home/screens/store_product_screen.dart';
 import 'package:kmutnb_project/features/home/services/home_service.dart';
 import 'package:kmutnb_project/features/product_details/screens/product_deatails_screen.dart';
-
+import 'package:badges/badges.dart' as badge;
 import 'package:provider/provider.dart';
 
 import '../../../common/widgets/stars.dart';
@@ -16,6 +16,7 @@ import '../../../models/product.dart';
 import '../../../models/productprice.dart';
 import '../../../models/store.dart';
 import '../../../providers/user_provider.dart';
+import '../../cart/screens/cart_screen.dart';
 import '../../chat/screens/chat_screen.dart';
 import '../../search/screens/search_screen.dart';
 
@@ -36,7 +37,6 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
   String mocPrice = '';
   final HomeService homeService = HomeService();
   final AddressService addressService = AddressService();
-
   @override
   void initState() {
     super.initState();
@@ -76,6 +76,8 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -139,11 +141,31 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                   ),
                 ),
               ),
-              Container(
-                color: Colors.transparent,
-                height: 42,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: const Icon(Icons.mic, color: Colors.black, size: 25),
+              const SizedBox(
+                width: 10,
+              ),
+              InkWell(
+                child: Container(
+                  width: 35,
+                  decoration: const BoxDecoration(),
+                  child: badge.Badge(
+                    position: badge.BadgePosition.topEnd(top: -12, end: -2),
+                    badgeContent: Text(userCartLen.toString()),
+                    badgeStyle: badge.BadgeStyle(
+                      badgeColor: Colors.blue.shade400,
+                      padding: const EdgeInsets.all(5),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+                },
               ),
             ],
           ),

@@ -295,7 +295,8 @@ class _AddressScreenState extends State<AddressScreen> {
         areaController.text.isNotEmpty ||
         pincodeController.text.isNotEmpty ||
         cityController.text.isNotEmpty;
-    if (isForm) {
+    if (isForm || addressFromProvider.isEmpty) {
+      showSnackBar(context, 'กรุณาเพิ่มที่อยู่');
       if (_addressFormKey.currentState!.validate()) {
         addressToBeUsed =
             '${flatBuildingController.text},${areaController.text},${cityController.text} - ${pincodeController.text}';

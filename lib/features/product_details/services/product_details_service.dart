@@ -52,7 +52,7 @@ class ProductDetailsServices {
 
   void rateProduct({
     required BuildContext context,
-    required Product product,
+    required String productID,
     required double rating,
     // required String id,
   }) async {
@@ -65,7 +65,7 @@ class ProductDetailsServices {
           'authorization': userProvider.user.token,
         },
         body: jsonEncode({
-          'productId': product.id!,
+          'productId': productID,
           'rating': rating,
           'userId': userProvider.user.id
         }),

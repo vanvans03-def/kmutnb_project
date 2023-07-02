@@ -2,11 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
+import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/features/product_details/services/product_details_service.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:badges/badges.dart' as badge;
 import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/product.dart';
@@ -48,7 +49,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (widget.product.rating!.isNotEmpty) {
       avgRating = totalRating / widget.product.rating!.length;
     }
-    setState(() {}); // อัปเดตค่า avgRating
+    setState(() {});
   }
 
   final AdminService adminServices = AdminService();
@@ -74,6 +75,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       context: context,
       product: widget.product,
     );
+    showSnackBar(context, 'เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว');
   }
 
   void addToCartAndGo() {
@@ -91,6 +93,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -154,11 +157,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ),
               ),
-              Container(
-                color: Colors.transparent,
-                height: 42,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: const Icon(Icons.mic, color: Colors.black, size: 25),
+              SizedBox(
+                width: 15,
+              ),
+              InkWell(
+                child: Container(
+                  width: 35,
+                  decoration: const BoxDecoration(),
+                  child: badge.Badge(
+                    position: badge.BadgePosition.topEnd(top: -12, end: -2),
+                    badgeContent: Text(userCartLen.toString()),
+                    badgeStyle: badge.BadgeStyle(
+                      badgeColor: Colors.blue.shade400,
+                      padding: const EdgeInsets.all(5),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -302,35 +325,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             color: Colors.black12,
             height: 5,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              'คะแนนสินค้า',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          RatingBar.builder(
-            initialRating: myRating,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: true,
-            itemCount: 5,
-            itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-            itemBuilder: (context, _) => const Icon(
-              Icons.star,
-              color: GlobalVariables.secondaryColor,
-            ),
-            onRatingUpdate: (rating) {
-              productDetailsServices.rateProduct(
-                context: context,
-                product: widget.product,
-                rating: rating,
-              );
-            },
-          )
         ],
       )),
     );

@@ -42,7 +42,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   }
 
   HomeService homeService = HomeService();
-  void _openMapScreen(double lat, double lng) async {
+  Future<void> _openMapScreen(double lat, double lng) async {
     final value = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -55,15 +55,6 @@ class _FilterWidgetState extends State<FilterWidget> {
 
     if (value != null) {
       provinces = value;
-      setState(() {
-        try {
-          selectedProvinceId = provinces[0].id.toString();
-          label = '${provinces[0].officialRegion} รอบๆตัวฉัน';
-          isTaps = true;
-        } catch (e) {
-          showSnackBar(context, 'เกิดข้อผิดพลาด');
-        }
-      });
     }
   }
 
@@ -78,330 +69,388 @@ class _FilterWidgetState extends State<FilterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Keyword',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Material(
-                  borderRadius: BorderRadius.circular(7),
-                  elevation: 1,
-                  child: TextFormField(
-                    controller: searchController,
-                    onChanged: (value) {
-                      setState(() {
-                        keyword = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.only(
-                          left: 6,
-                        ),
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.black,
-                          size: 23,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.only(top: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(7),
-                        ),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(7),
-                        ),
-                        borderSide: BorderSide(
-                          color: Colors.black38,
-                          width: 1,
-                        ),
-                      ),
-                      hintText: 'Search ',
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                      ),
-                    ),
-                  ),
-                ),
-                if (isTaps) ...[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Location Store',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      DropdownWidget(
-                        provinces: provinces,
-                        selectedProvinceId: selectedProvinceId,
-                        onChanged: (String? newVal) async {
-                          setState(() {
-                            selectedProvinceId = newVal!.toString();
-                          });
-                        },
-                        label: label,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.location_pin),
-                              label: const Text(
-                                'แสดงร้านค้ารอบๆตัวฉัน',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
-                              ),
-                              onPressed: () async {
-                                Position data = await _determinePosition();
-
-                                String latString = data.toString().substring(
-                                    data.toString().indexOf('Latitude:') + 9,
-                                    data.toString().indexOf(','));
-                                String longString = data.toString().substring(
-                                    data.toString().indexOf('Longitude:') + 10);
-
-                                double latitude = double.parse(latString);
-                                double longitude = double.parse(longString);
-
-                                _openMapScreen(latitude, longitude);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.map),
-                              label: const Text(
-                                'เฉพาะร้านค้าในกรุงเทพ',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
-                              ),
-                              onPressed: () async {
-                                provinces =
-                                    await homeService.fetchAllProvinceByOption(
-                                  context: context,
-                                  provinceName: 'กรุงเทพมหานคร',
-                                  type: 'OnlyBKK',
-                                );
-                                setState(() {
-                                  selectedProvinceId = provinces.first.id;
-                                  label = "กรุงเทพมหานคร";
-                                  isTaps = true;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.near_me),
-                              label: const Text(
-                                'กรุงเทพมหานครและปริมณฑล',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
-                              ),
-                              onPressed: () async {
-                                provinces =
-                                    await homeService.fetchAllProvinceByOption(
-                                  context: context,
-                                  provinceName: 'กรุงเทพมหานคร',
-                                  type: 'perimeter',
-                                );
-                                setState(() {
-                                  selectedProvinceId =
-                                      provinces[0].id.toString();
-                                  label = "กรุงเทพมาหนครและปริมณฑล";
-                                  isTaps = true;
-                                });
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.near_me_disabled),
-                              label: const Text(
-                                'ทุกร้านค้าในประเทศไทย',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
-                              ),
-                              onPressed: () async {
-                                provinces =
-                                    await homeService.fetchAllProvinceByOption(
-                                  context: context,
-                                  provinceName: 'กรุงเทพมหานคร',
-                                  type: 'All',
-                                );
-                                setState(() {
-                                  provinces.insert(
-                                    0,
-                                    Province(
-                                      id: "",
-                                      provinceThai:
-                                          "เลือกจากทุกจังหวัดในประเทศไทย",
-                                      area: '',
-                                      bangkokMetropolitan: '',
-                                      femalePopulation62: '',
-                                      fourRegion: '',
-                                      malePopulation62: '',
-                                      officialRegion: '',
-                                      population62: '',
-                                      provinceEng:
-                                          '-Select from all provinces in Thailand-',
-                                      provinceID: '',
-                                      tourismRegion: '',
-                                    ),
-                                  );
-                                  selectedProvinceId =
-                                      provinces[0].id.toString();
-                                  label = "77 จังหวัด";
-                                  isTaps = true;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Price Range',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'ราคาขั้นต่ำ',
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            minPrice = double.tryParse(value) ?? 0;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'ราคาสูงสุด',
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            maxPrice = double.tryParse(value) ?? 0;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Sort By',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: sortByPriceLow,
-                      onChanged: (value) {
-                        setState(() {
-                          sortByPriceLow = value ?? false;
-                        });
-                      },
-                    ),
-                    const Text('เรียงตามสินค้าที่น้อยที่สุด'),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: sortByPriceHigh,
-                      onChanged: (value) {
-                        setState(() {
-                          sortByPriceHigh = value ?? false;
-                        });
-                      },
-                    ),
-                    const Text('เรียงตามสินค้าที่มากที่สุด'),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _applyFilters();
-                    Navigator.pop(context);
-                  },
-                  child: const Text('ยืนยันการเลือก'),
-                ),
-              ],
+    return Container(
+      width: double.infinity,
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              _openFilterOptions();
+            },
+          ),
+          const Text(
+            'Select Filter',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
+  void _openFilterOptions() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Keyword',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Material(
+                      borderRadius: BorderRadius.circular(7),
+                      elevation: 1,
+                      child: TextFormField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            keyword = value;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(
+                              left: 6,
+                            ),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.black,
+                              size: 23,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.only(top: 10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(7),
+                            ),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(7),
+                            ),
+                            borderSide: BorderSide(
+                              color: Colors.black38,
+                              width: 1,
+                            ),
+                          ),
+                          hintText: 'Search ',
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (isTaps) ...[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Location Store',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          DropdownWidget(
+                            provinces: provinces,
+                            selectedProvinceId: selectedProvinceId,
+                            onChanged: (String? newVal) async {
+                              setState(() {
+                                selectedProvinceId = newVal!.toString();
+                              });
+                            },
+                            label: label,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.location_pin),
+                                  label: const Text(
+                                    'แสดงร้านค้ารอบๆตัวฉัน',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    Position data = await _determinePosition();
+
+                                    String latString = data
+                                        .toString()
+                                        .substring(
+                                            data
+                                                    .toString()
+                                                    .indexOf('Latitude:') +
+                                                9,
+                                            data.toString().indexOf(','));
+                                    String longString = data
+                                        .toString()
+                                        .substring(data
+                                                .toString()
+                                                .indexOf('Longitude:') +
+                                            10);
+
+                                    double latitude = double.parse(latString);
+                                    double longitude = double.parse(longString);
+
+                                    await _openMapScreen(latitude, longitude);
+                                    setState(() {
+                                      try {
+                                        selectedProvinceId =
+                                            provinces[0].id.toString();
+                                        label =
+                                            '${provinces[0].officialRegion} รอบๆตัวฉัน';
+                                        isTaps = true;
+                                      } catch (e) {
+                                        showSnackBar(context, 'เกิดข้อผิดพลาด');
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.map),
+                                  label: const Text(
+                                    'เฉพาะร้านค้าในกรุงเทพ',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    provinces = await homeService
+                                        .fetchAllProvinceByOption(
+                                      context: context,
+                                      provinceName: 'กรุงเทพมหานคร',
+                                      type: 'OnlyBKK',
+                                    );
+                                    setState(() {
+                                      selectedProvinceId = provinces.first.id;
+                                      label = "กรุงเทพมหานคร";
+                                      isTaps = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.near_me),
+                                  label: const Text(
+                                    'กรุงเทพมหานครและปริมณฑล',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    provinces = await homeService
+                                        .fetchAllProvinceByOption(
+                                      context: context,
+                                      provinceName: 'กรุงเทพมหานคร',
+                                      type: 'perimeter',
+                                    );
+                                    setState(() {
+                                      selectedProvinceId =
+                                          provinces[0].id.toString();
+                                      label = "กรุงเทพมาหนครและปริมณฑล";
+                                      isTaps = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.near_me_disabled),
+                                  label: const Text(
+                                    'ทุกร้านค้าในประเทศไทย',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    provinces = await homeService
+                                        .fetchAllProvinceByOption(
+                                      context: context,
+                                      provinceName: 'กรุงเทพมหานคร',
+                                      type: 'All',
+                                    );
+                                    setState(() {
+                                      provinces.insert(
+                                        0,
+                                        Province(
+                                          id: "",
+                                          provinceThai:
+                                              "เลือกจากทุกจังหวัดในประเทศไทย",
+                                          area: '',
+                                          bangkokMetropolitan: '',
+                                          femalePopulation62: '',
+                                          fourRegion: '',
+                                          malePopulation62: '',
+                                          officialRegion: '',
+                                          population62: '',
+                                          provinceEng:
+                                              '-Select from all provinces in Thailand-',
+                                          provinceID: '',
+                                          tourismRegion: '',
+                                        ),
+                                      );
+                                      selectedProvinceId =
+                                          provinces[0].id.toString();
+                                      label = "77 จังหวัด";
+                                      isTaps = true;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Price Range',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'ราคาขั้นต่ำ',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                minPrice = double.tryParse(value) ?? 0;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'ราคาสูงสุด',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                maxPrice = double.tryParse(value) ?? 0;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Sort By',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: sortByPriceLow,
+                          onChanged: (value) {
+                            setState(() {
+                              sortByPriceLow = value ?? false;
+                            });
+                          },
+                        ),
+                        const Text('เรียงตามสินค้าที่น้อยที่สุด'),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: sortByPriceHigh,
+                          onChanged: (value) {
+                            setState(() {
+                              sortByPriceHigh = value ?? false;
+                            });
+                          },
+                        ),
+                        const Text('เรียงตามสินค้าที่มากที่สุด'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        _applyFilters();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('ยืนยันการเลือก'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
   List<Product> productList = [];
-  Future<void> _applyFilters() async {
+  void _applyFilters() async {
     productList = await homeService.fetchFilterProduct(
       context: context,
       minPrice: minPrice,

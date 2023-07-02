@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     showModalBottomSheet(
                       context: context,
                       builder: (context) {
-                        return FilterWidget();
+                        return const FilterWidget();
                       },
                     );
                   },

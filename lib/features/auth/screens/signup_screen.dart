@@ -36,14 +36,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final user = await GoogleSignInApi.login();
 
     // ignore: use_build_context_synchronously
-
+    String imageUrl = '';
+    if (user!.photoUrl.toString().isNotEmpty) {
+      imageUrl = user.photoUrl.toString();
+    }
     authService.registerUserOauth(
       context: context,
-      email: user!.email,
+      email: user.email,
       password: '',
       name: user.displayName.toString(),
       id: user.id,
-      image: user.photoUrl.toString(),
+      image: imageUrl,
       token: user.serverAuthCode.toString(),
     );
   }

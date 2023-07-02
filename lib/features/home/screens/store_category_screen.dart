@@ -7,12 +7,16 @@ import 'package:kmutnb_project/features/admin/screens/edit_products_screen.dart'
 import 'package:kmutnb_project/features/home/screens/store_product_screen.dart';
 import 'package:kmutnb_project/models/category.dart';
 import 'package:kmutnb_project/models/product.dart';
+import 'package:provider/provider.dart';
 import '../../../common/widgets/stars.dart';
 import '../../../models/productprice.dart';
 import '../../../models/store.dart';
+import '../../../providers/user_provider.dart';
 import '../../address/services/address_services.dart';
 import '../../admin/services/admin_service.dart';
+import '../../cart/screens/cart_screen.dart';
 import '../../home/services/home_service.dart';
+import 'package:badges/badges.dart' as badge;
 
 class StoreCategoryScreen extends StatefulWidget {
   static const String routeName = '/store-category';
@@ -75,13 +79,44 @@ class _StoreCategoryScreenState extends State<StoreCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            'สินค้าในหมวดหมู่ $categoryName',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'สินค้าในหมวดหมู่ $categoryName',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              InkWell(
+                child: Container(
+                  width: 35,
+                  decoration: BoxDecoration(),
+                  child: badge.Badge(
+                    position: badge.BadgePosition.topEnd(top: -12, end: -2),
+                    badgeContent: Text(userCartLen.toString()),
+                    //badgeColor: Colors.white,
+                    badgeStyle: badge.BadgeStyle(
+                      badgeColor: Colors.blue.shade400,
+                      padding: EdgeInsets.all(5),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+                },
+              ),
+            ],
           ),
         ),
         body: productList == null

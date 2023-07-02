@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_card/image_card.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/features/home/screens/store_category_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/widgets/stars.dart';
 import '../../../constants/global_variables.dart';
@@ -9,9 +10,11 @@ import '../../../models/category.dart';
 import '../../../models/product.dart';
 import '../../../models/productprice.dart';
 import '../../../models/store.dart';
+import '../../../providers/user_provider.dart';
 import '../../account/widgets/single_product.dart';
-
+import 'package:badges/badges.dart' as badge;
 import '../../admin/services/admin_service.dart';
+import '../../cart/screens/cart_screen.dart';
 import '../../product_details/screens/product_deatails_screen.dart';
 import '../../product_details/services/product_details_service.dart';
 
@@ -82,11 +85,43 @@ class _StoreProductScreenState extends State<StoreProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
-          title: Text('ร้าน ${widget.store.storeName} '),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text('ร้าน ${widget.store.storeName}'),
+              ),
+              InkWell(
+                child: Container(
+                  width: 35,
+                  decoration: BoxDecoration(),
+                  child: badge.Badge(
+                    position: badge.BadgePosition.topEnd(top: -12, end: -2),
+                    badgeContent: Text(userCartLen.toString()),
+                    //badgeColor: Colors.white,
+                    badgeStyle: badge.BadgeStyle(
+                      badgeColor: Colors.blue.shade400,
+                      padding: EdgeInsets.all(5),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: GlobalVariables.appBarGradient,

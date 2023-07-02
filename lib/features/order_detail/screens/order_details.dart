@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/auth/widgets/constants.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/widgets/customer_button.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/order.dart';
 
+import '../../../providers/user_provider.dart';
 import '../../home/screens/store_product_screen.dart';
+import '../../product_details/services/product_details_service.dart';
 import '../../search/screens/search_screen.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -27,6 +32,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   String orderId = '';
   int checkOrder = 0;
   int index = 0;
+  bool changeRating = false;
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
@@ -52,23 +58,129 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     if (widget.order.products.length == 1) {
       showContainer = true;
     }
-    print(checkOrder);
-    print(showContainer);
   }
 
-  void returnOrderstatus(
-      int status, String orderId, String productId, String storeId) {
-    adminService.changeOrderStatus(
-        context: context,
-        status: status + 1,
-        orderId: orderId,
-        storeId: storeId,
-        productId: productId,
-        onSuccess: () {});
-    setState(() {
-      currentStep += 1;
-      checkOrder = currentStep;
-    });
+  Future<void> returnOrderstatus(
+      int status, String orderId, String productId, String storeId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('คืนสินค้า'),
+          content: const Text('คุณยืนยันที่จะคืนสินค้านี้ใช่ไหม?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ยกเลิก'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text(
+                'ยืนยัน',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                adminService.changeOrderStatus(
+                    context: context,
+                    status: status + 1,
+                    orderId: orderId,
+                    storeId: storeId,
+                    productId: productId,
+                    onSuccess: () {});
+                setState(() {
+                  currentStep += 1;
+                  checkOrder = currentStep;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  final ProductDetailsServices productDetailsServices =
+      ProductDetailsServices();
+  double myRating = 0;
+  double avgRating = 0;
+  String mocPrice = '';
+
+  Future<void> reviewProduct(String productId) async {
+    double totalRating = 0;
+    for (int i = 0;
+        i < widget.order.products[indexProduct].product.rating!.length;
+        i++) {
+      totalRating +=
+          widget.order.products[indexProduct].product.rating![i].rating;
+      if (widget.order.products[indexProduct].product.rating![i].userId ==
+              Provider.of<UserProvider>(context, listen: false).user.id &&
+          !changeRating) {
+        myRating =
+            widget.order.products[indexProduct].product.rating![i].rating;
+      }
+    }
+
+    if (widget.order.products[indexProduct].product.rating!.isNotEmpty) {
+      avgRating = totalRating /
+          widget.order.products[indexProduct].product.rating!.length;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('รีวิวสินค้า'),
+          content: Container(
+            alignment: Alignment.centerLeft,
+            height: 120, // ปรับความสูงตามต้องการ
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    'ให้คะแนนสินค้าหลังจากได้รับสินค้าแล้ว',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8), // เพิ่ม SizedBox สำหรับระยะห่าง
+                SizedBox(
+                  height: 40,
+                  child: RatingBar.builder(
+                    initialRating: myRating,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 1),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: GlobalVariables.secondaryColor,
+                    ),
+                    onRatingUpdate: (rating) {
+                      productDetailsServices.rateProduct(
+                        context: context,
+                        productID: productId,
+                        rating: rating,
+                      );
+                      showSnackBar(context, 'ให้คะแนนสินค้าเรียบร้อยแล้ว');
+                      changeRating = true;
+                      if (changeRating) {
+                        myRating = rating;
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -302,23 +414,65 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     controlsBuilder: (context, details) {
                       if (currentStep >= 0 && currentStep <= 3) {
                         if (currentStep == 3) {
-                          return SizedBox(
-                            height: 30,
-                            width: 110,
-                            child: CustomButton(
-                                color: Colors.red.shade400,
-                                text: 'คืนสินค้า',
-                                onTap: () {
-                                  returnOrderstatus(
-                                      3,
-                                      widget.order.id,
-                                      widget.order.products[indexProduct]
-                                          .product.id
-                                          .toString(),
-                                      widget.order.products[indexProduct]
-                                          .product.storeId);
-                                  setState(() {});
-                                }),
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 30,
+                                      width: 110,
+                                      child: CustomButton(
+                                          color: GlobalVariables.secondaryColor,
+                                          text: 'รีวิวสินค้า',
+                                          onTap: () async {
+                                            await reviewProduct(
+                                              widget
+                                                  .order
+                                                  .products[indexProduct]
+                                                  .product
+                                                  .id
+                                                  .toString(),
+                                            );
+                                            setState(() {});
+                                          }),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 30,
+                                      width: 110,
+                                      child: CustomButton(
+                                          color: Colors.red.shade400,
+                                          text: 'คืนสินค้า',
+                                          onTap: () {
+                                            returnOrderstatus(
+                                                3,
+                                                widget.order.id,
+                                                widget
+                                                    .order
+                                                    .products[indexProduct]
+                                                    .product
+                                                    .id
+                                                    .toString(),
+                                                widget
+                                                    .order
+                                                    .products[indexProduct]
+                                                    .product
+                                                    .storeId);
+                                            setState(() {});
+                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           );
                         }
 
