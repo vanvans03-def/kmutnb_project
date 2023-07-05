@@ -352,6 +352,7 @@ class _CategoryDealsScreenState extends State<CategoryDealsScreen> {
                                           productPriceList: productpricesList,
                                           productName: product.productName,
                                           ratings: avgRating,
+                                          productType: product.productType,
                                         ),
                                       ],
                                     ),
@@ -378,6 +379,7 @@ class SingleOrderProduct extends StatelessWidget {
   final String productName;
   final double ratings;
   final List<ProductPrice> productPriceList;
+  final String productType;
 
   const SingleOrderProduct({
     Key? key,
@@ -387,6 +389,7 @@ class SingleOrderProduct extends StatelessWidget {
     required this.productPriceList,
     required this.productName,
     required this.ratings,
+    required this.productType,
   }) : super(key: key);
 
   @override
@@ -428,7 +431,7 @@ class SingleOrderProduct extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                  'ราคาตลาดวันนี้ $mocPrice $productType',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -467,7 +470,7 @@ class SingleOrderProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿/กก.",
+      "$price $productType",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(

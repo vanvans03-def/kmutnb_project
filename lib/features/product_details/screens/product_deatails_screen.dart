@@ -236,7 +236,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                      'ราคาตลาดวันนี้ $mocPrice ${widget.product.productType}',
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
@@ -277,7 +277,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 children: [
                   TextSpan(
-                    text: '${widget.product.productPrice}฿/กก',
+                    text:
+                        '${widget.product.productPrice} ${widget.product.productType}',
                     style: const TextStyle(
                       fontSize: 22,
                       color: Colors.red,

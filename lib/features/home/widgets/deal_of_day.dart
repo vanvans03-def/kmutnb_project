@@ -102,6 +102,7 @@ class _DealOfDayState extends State<DealOfDay> {
                           ratings: avgRating,
                           productPriceList: productpricesList,
                           productList: productList![0],
+                          saleType: productList![0].productType,
                         )
                       : const Loader(),
                 ),
@@ -114,7 +115,7 @@ class _DealOfDayState extends State<DealOfDay> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (int i = 0; i < (productList?.length ?? 0); i++)
+              for (int i = 0; i < 10; i++)
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(
@@ -135,6 +136,7 @@ class _DealOfDayState extends State<DealOfDay> {
                             productName: productList![i].productName,
                             ratings: 0,
                             productList: productList![i],
+                            productType: productList![i].productType,
                           )
                         : const Loader(),
                   ),
@@ -161,6 +163,7 @@ class SingleOrderProduct extends StatelessWidget {
   final double ratings;
   final List<ProductPrice> productPriceList;
   final Product productList;
+  final String productType;
   const SingleOrderProduct({
     Key? key,
     required this.image,
@@ -170,6 +173,7 @@ class SingleOrderProduct extends StatelessWidget {
     required this.productName,
     required this.ratings,
     required this.productList,
+    required this.productType,
   }) : super(key: key);
 
   @override
@@ -225,7 +229,7 @@ class SingleOrderProduct extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'ราคาตลาดวันนี้ $mocPrice ฿/กก',
+                  'ราคาตลาดวันนี้ $mocPrice $productType',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -264,7 +268,7 @@ class SingleOrderProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿/กก.",
+      "$price $productType",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -293,6 +297,7 @@ class SingleProduct extends StatelessWidget {
   final double ratings;
   final List<ProductPrice> productPriceList;
   final Product productList;
+  final String saleType;
   const SingleProduct({
     Key? key,
     required this.image,
@@ -302,6 +307,7 @@ class SingleProduct extends StatelessWidget {
     required this.productName,
     required this.ratings,
     required this.productList,
+    required this.saleType,
   }) : super(key: key);
 
   @override
@@ -360,7 +366,7 @@ class SingleProduct extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                    'ราคาตลาดวันนี้ $mocPrice $saleType',
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
@@ -400,7 +406,7 @@ class SingleProduct extends StatelessWidget {
 
   Widget _content({required Color color, required String price}) {
     return Text(
-      "$price฿/กก.",
+      "$price $saleType",
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(

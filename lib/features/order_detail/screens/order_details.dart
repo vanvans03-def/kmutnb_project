@@ -290,6 +290,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     )}'),
                     Text('รหัสออเดอร์:            ${widget.order.id}'),
                     Text('ยอดรวมออเดอร์:      \฿${widget.order.totalPrice}'),
+                    Text('รูปแบบการจัดส่ง:     ${widget.order.deliveryType}')
                   ],
                 ),
               ),
@@ -329,7 +330,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 currentStep =
                                     widget.order.products[i].statusProductOrder;
                               }
-                              print(currentStep);
                             } else {
                               showContainer = true;
                               indexProduct = i;
@@ -368,10 +368,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    'จำนวน: ${widget.order.products[i].productSKU} ชิ้น',
+                                    'จำนวน: ${widget.order.products[i].productSKU} ${widget.order.products[i].product.productType.substring(widget.order.products[i].product.productType.indexOf('/') + 1)}',
                                   ),
                                   Text(
-                                    'ราคาต่อชิ้น: ${widget.order.products[i].product.productPrice} บาท',
+                                    'ราคาต: ${widget.order.products[i].product.productPrice} ${widget.order.products[i].product.productType}',
                                   ),
                                   Radio(
                                     value:

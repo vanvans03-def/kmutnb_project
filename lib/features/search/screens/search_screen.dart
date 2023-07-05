@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:kmutnb_project/features/home/screens/store_product_screen.dart';
 import 'package:kmutnb_project/features/product_details/screens/product_deatails_screen.dart';
 import 'package:kmutnb_project/features/search/widgets/searched_product.dart';
 
 import '../../../common/widgets/loader.dart';
 import '../../../constants/global_variables.dart';
 import '../../../models/product.dart';
+import '../../../models/productprice.dart';
+import '../../admin/services/admin_service.dart';
 import '../../home/widgets/address_box.dart';
 import '../services/search_services.dart';
 
@@ -24,11 +27,20 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     fetchAllProduct();
+    _getProductprices();
   }
 
   fetchAllProduct() async {
     products = await searchServices.fetchAllProduct(
         context: context, searchQuery: widget.searchQuery);
+
+    setState(() {});
+  }
+
+  final AdminService adminServices = AdminService();
+  List<ProductPrice> productpricesList = [];
+  void _getProductprices() async {
+    productpricesList = await adminServices.fetchAllProductprice(context);
 
     setState(() {});
   }
@@ -129,6 +141,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: ListView.builder(
                       itemCount: products!.length,
                       itemBuilder: (context, index) {
+                        mocPrice = '';
+                        for (int i = 0; i < productpricesList.length; i++) {
+                          // ignore: unrelated_type_equality_checks
+                          if (productpricesList[i].productId ==
+                              products![index].productSalePrice) {
+                            mocPrice = productpricesList[i].priceMax.toString();
+                          }
+                        }
                         return GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
@@ -139,6 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           },
                           child: SearchProduct(
                             product: products![index],
+                            mocPrice: mocPrice,
                           ),
                         );
                       },

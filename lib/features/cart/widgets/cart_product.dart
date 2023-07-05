@@ -50,8 +50,7 @@ class _CartProductState extends State<CartProduct> {
   @override
   Widget build(BuildContext context) {
     final productCart = context.watch<UserProvider>().user.cart[widget.index];
-    //print(productCart);
-    //print(productCart); แก้ product data ของ user
+
     final product = Product.fromMap(productCart['product']);
 
     final quantity = productCart['quantity'];

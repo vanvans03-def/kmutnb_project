@@ -53,6 +53,7 @@ class AddressService {
     required String address,
     required double totalSum,
     required File? image,
+    required String deliveryType,
   }) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     String imageSlip = 'GooglePay';
@@ -74,6 +75,7 @@ class AddressService {
             'totalPrice': totalSum,
             'userId': userProvider.user.id,
             'image': imageSlip,
+            'deliveryType': deliveryType,
           }));
 
       // ignore: use_build_context_synchronously

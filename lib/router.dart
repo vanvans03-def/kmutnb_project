@@ -118,13 +118,16 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         ),
       );
     case AddressScreen.routeName:
-      var totalAmount = routeSettings.arguments as String;
+      final arguments = routeSettings.arguments as Map<String, dynamic>;
+
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => AddressScreen(
-          totalAmount: totalAmount,
+          totalAmount: arguments['totalAmount'],
+          deliveryType: arguments['deliveryType'],
         ),
       );
+
     case MapScreen.routeName:
       var currentLat = routeSettings.arguments as double;
       var currentLng = routeSettings.arguments as double;

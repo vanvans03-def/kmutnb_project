@@ -35,8 +35,6 @@ class SearchServices {
               );
             }
           });
-      print(
-          productList); // ตรวจสอบค่า productList หลังจากที่สินค้าถูกเพิ่มในลูป for
     } catch (e) {
       showSnackBar(context, e.toString());
     }

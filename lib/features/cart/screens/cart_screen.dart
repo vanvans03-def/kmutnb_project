@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kmutnb_project/common/widgets/customer_button.dart';
+import 'package:kmutnb_project/constants/utills.dart';
 import 'package:kmutnb_project/features/address/screens/addres_screen.dart';
+import 'package:kmutnb_project/features/auth/widgets/constants.dart';
 import 'package:kmutnb_project/features/cart/widgets/cart_subtotal.dart';
 import 'package:kmutnb_project/features/home/widgets/address_box.dart';
 import 'package:kmutnb_project/providers/user_provider.dart';
@@ -23,8 +25,18 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void navigateToAddress(double sum) {
-    Navigator.pushNamed(context, AddressScreen.routeName,
-        arguments: sum.toString());
+    if (_selectedValue == null) {
+      showSnackBar(context, 'กรุณาเลือกตัวเลือกการจัดส่ง');
+    } else {
+      Navigator.pushNamed(
+        context,
+        AddressScreen.routeName,
+        arguments: {
+          'totalAmount': sum.toString(),
+          'deliveryType': _selectedValue,
+        },
+      );
+    }
   }
 
   void showEmptyCartDialog(BuildContext context) {
@@ -47,6 +59,9 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  String? _selectedValue;
+
+  List<bool> _isSelected = [true, false];
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
@@ -135,8 +150,69 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             const AddressBox(),
+            const SizedBox(height: 10),
+            if (user.cart.isNotEmpty) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          value: 'ส่งธรรมดา',
+                          groupValue: _selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedValue = value;
+                            });
+                          },
+                          title: const Text('ส่งธรรมดา'),
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile(
+                          value: 'ส่งด่วนพิเศษ',
+                          groupValue: _selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedValue = value;
+                            });
+                          },
+                          title: const Text('ส่งด่วนพิเศษ'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  if (_selectedValue != null) ...[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'ตัวเลือกการจัดส่ง: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            '$_selectedValue',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
+                ],
+              ),
+            ],
+            const SizedBox(height: 10),
             const CartSubtotal(),
             Padding(
               padding: const EdgeInsets.all(8.0),

@@ -1,5 +1,8 @@
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:image_card/image_card.dart';
+import 'package:provider/provider.dart';
+
 import 'package:kmutnb_project/common/widgets/loader.dart';
 import 'package:kmutnb_project/features/account/widgets/single_product.dart';
 import 'package:kmutnb_project/features/admin/screens/add_products_screen.dart';
@@ -7,7 +10,7 @@ import 'package:kmutnb_project/features/admin/screens/edit_products_screen.dart'
 import 'package:kmutnb_project/features/home/screens/store_product_screen.dart';
 import 'package:kmutnb_project/models/category.dart';
 import 'package:kmutnb_project/models/product.dart';
-import 'package:provider/provider.dart';
+
 import '../../../common/widgets/stars.dart';
 import '../../../models/productprice.dart';
 import '../../../models/store.dart';
@@ -16,7 +19,6 @@ import '../../address/services/address_services.dart';
 import '../../admin/services/admin_service.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../home/services/home_service.dart';
-import 'package:badges/badges.dart' as badge;
 
 class StoreCategoryScreen extends StatefulWidget {
   static const String routeName = '/store-category';
@@ -222,6 +224,8 @@ class _StoreCategoryScreenState extends State<StoreCategoryScreen> {
                                                 categoryName: categoryName,
                                                 mocPrice: mocPrice,
                                                 avgRating: avgRating,
+                                                productType:
+                                                    productData.productType,
                                               ),
                                             ),
                                           ),
@@ -250,6 +254,7 @@ class SingleProduct extends StatelessWidget {
   String categoryName;
   String mocPrice;
   double avgRating;
+  String productType;
 
   SingleProduct({
     Key? key,
@@ -259,6 +264,7 @@ class SingleProduct extends StatelessWidget {
     required this.categoryName,
     required this.mocPrice,
     required this.avgRating,
+    required this.productType,
   }) : super(key: key);
 
   @override
@@ -293,7 +299,7 @@ class SingleProduct extends StatelessWidget {
                         color: Colors.red,
                       ),
                       child: Text(
-                        'ราคาตลาดวันนี้ $mocPrice฿/กก.',
+                        'ราคาตลาดวันนี้ $mocPrice $productType',
                         style:
                             const TextStyle(color: Colors.white, fontSize: 10),
                       ),
@@ -376,7 +382,7 @@ class SingleProduct extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '$productPrice ฿',
+          '$productPrice $productType',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(

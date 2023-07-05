@@ -18,7 +18,10 @@ import '../services/address_services.dart';
 class AddressScreen extends StatefulWidget {
   static const String routeName = '/address';
   final String totalAmount;
-  const AddressScreen({Key? key, required this.totalAmount}) : super(key: key);
+  final String deliveryType;
+  const AddressScreen(
+      {Key? key, required this.totalAmount, required this.deliveryType})
+      : super(key: key);
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -40,6 +43,7 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   void initState() {
     super.initState();
+    print(widget.deliveryType);
     _paymentItems.add(PaymentItem(
       amount: widget.totalAmount,
       label: 'Total Amount',
@@ -244,7 +248,8 @@ class _AddressScreenState extends State<AddressScreen> {
         context: context,
         address: addressToBeUsed,
         totalSum: double.parse(widget.totalAmount),
-        image: _selectedImage);
+        image: _selectedImage,
+        deliveryType: widget.deliveryType);
   }
 
   Future<File?> pickOneImage() async {
@@ -281,6 +286,7 @@ class _AddressScreenState extends State<AddressScreen> {
       address: addressToBeUsed,
       totalSum: double.parse(widget.totalAmount),
       image: _selectedImage,
+      deliveryType: widget.deliveryType,
     );
   }
 
